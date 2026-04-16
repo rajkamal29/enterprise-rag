@@ -3,7 +3,7 @@
 Current date: 2026-04-16
 
 ## Day Status
-- [ ] Day 1 - Setup + Guardrails
+- [x] Day 1 - Setup + Guardrails
 - [ ] Day 2 - Cost + Observability
 - [ ] Day 3 - Ingestion + Baseline RAG
 - [ ] Day 4 - Hybrid Retrieval + Rerank

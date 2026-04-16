@@ -3,14 +3,14 @@
 Last updated: 2026-04-16
 
 ## Overall Progress
-- Days completed: 0/10
-- Hours invested: 0/60
-- CI status: Not started
+- Days completed: 1/10
+- Hours invested: 6/60
+- CI status: Passing
 
 ## Daily Log
 | Day | Status | Hours | CI | Key output |
 | --- | --- | ---: | --- | --- |
-| 1 | Not started | 0 | N/A | Repo setup and guardrails |
+| 1 | Complete | 6 | ✅ | Guardrails (input validator + circuit breaker), CI/CD, security scans |
 | 2 | Not started | 0 | N/A | Cost and observability |
 | 3 | Not started | 0 | N/A | Baseline RAG pipeline |
 | 4 | Not started | 0 | N/A | Hybrid retrieval stack |
