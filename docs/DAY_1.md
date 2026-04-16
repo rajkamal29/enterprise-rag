@@ -17,9 +17,10 @@ Goal: Establish production-grade repository baseline.
 
 ## Commands
 ```powershell
-uv init --python 3.11
-uv add pydantic langchain faiss-cpu
-uv add --dev pytest ruff mypy bandit pre-commit
+uv init --python 3.12
+uv add pydantic langchain
+uv add "faiss-cpu; platform_system != 'Windows'"
+uv add --dev pytest ruff mypy bandit pip-audit pre-commit
 ```
 
 ## Exit Criteria
