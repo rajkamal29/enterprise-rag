@@ -3,16 +3,16 @@
 Current date: 2026-04-16
 
 ## Day Status
-- [x] Day 1 - Setup + Guardrails
-- [ ] Day 2 - Cost + Observability
-- [ ] Day 3 - Ingestion + Baseline RAG
-- [ ] Day 4 - Hybrid Retrieval + Rerank
-- [ ] Day 5 - Tracing + Alerts
-- [ ] Day 6 - Fallback + Degradation
-- [ ] Day 7 - 100M Scale Design
-- [ ] Day 8 - Deployment + A/B Testing
-- [ ] Day 9 - Corrective/Self/Graph RAG
-- [ ] Day 10 - Portfolio Readiness + Polish
+- [x] Day 1 - Setup + Guardrails + CI/CD
+- [ ] Day 2 - Azure Infrastructure Foundation
+- [ ] Day 3 - Document Ingestion + AI Search Indexing
+- [ ] Day 4 - Agent Foundation (LangGraph ReAct + Tool Calling)
+- [ ] Day 5 - Agent Tools + Memory
+- [ ] Day 6 - Hybrid Retrieval + RAGAS Evaluation
+- [ ] Day 7 - Observability + Responsible AI
+- [ ] Day 8 - Multi-Agent Pattern
+- [ ] Day 9 - Deployment (ACA + APIM + Private Networking)
+- [ ] Day 10 - Portfolio Readiness + Architecture Narrative
 
 ## Daily Time Box (6 Hours)
 - [ ] Block 1 (2h): Plan + design + read today guide

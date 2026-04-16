@@ -1,26 +1,64 @@
-# Day 9 - Advanced RAG Patterns
+# Day 9 - Deployment: Azure Container Apps + APIM + Private Networking
 
-Goal: Add interview-differentiating advanced capabilities.
+Goal: Deploy the Agentic RAG system to Azure with production-grade security and scalability.
 
 ## Outcomes
-- Corrective RAG flow.
-- Self-evaluation pass before final answer.
-- Graph-oriented retrieval prototype notes.
+- Multi-stage Dockerfile (non-root user, minimal base image, no secrets baked in).
+- Deployed to Azure Container Apps with KEDA autoscaling.
+- Azure API Management as the secure front door (auth, rate limiting, versioning).
+- Private Endpoints for all backend services (AI Search, OpenAI, Key Vault, Cosmos).
+- GitHub Actions CD pipeline: build → push to ACR → deploy to ACA.
+
+## Deployment Architecture
+```
+Client
+  │
+  ▼
+Azure API Management  ← Auth (AAD), Rate limiting, Versioning
+  │
+  ▼  (private VNET)
+Azure Container Apps  ← KEDA autoscale, Managed Identity
+  │
+  ├── Azure OpenAI          (Private Endpoint)
+  ├── Azure AI Search        (Private Endpoint)
+  ├── Azure Key Vault        (Private Endpoint)
+  └── Azure Cosmos DB        (Private Endpoint)
+```
+
+## Dockerfile Best Practices
+```dockerfile
+# Multi-stage: builder stage + minimal runtime stage
+FROM python:3.12-slim AS builder
+WORKDIR /app
+COPY pyproject.toml uv.lock ./
+RUN pip install uv && uv sync --frozen --no-dev
+
+FROM python:3.12-slim
+WORKDIR /app
+# Non-root user — never run as root in containers
+RUN useradd --uid 1001 --no-create-home appuser
+COPY --from=builder /app/.venv .venv
+COPY src/ src/
+USER appuser
+ENV PATH="/app/.venv/bin:$PATH"
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
 
 ## 6-Hour Plan
-1. Define corrective trigger conditions.
-2. Add self-check quality gate.
-3. Add graph relation extraction concept.
-4. Benchmark advanced modes vs baseline.
-5. Document when each mode is worth its cost.
-6. Push with evaluation summary.
+1. Write `Dockerfile` (multi-stage, non-root, no secrets).
+2. Add `src/api/main.py` — FastAPI app wrapping the LangGraph agent.
+3. Create Azure Container Registry, build and push image.
+4. Deploy to Azure Container Apps with Managed Identity and KEDA scaling rules.
+5. Configure Azure API Management with JWT validation and rate limiting policy.
+6. Verify private endpoint connectivity; add CD workflow to GitHub Actions.
 
 ## Exit Criteria
-- Advanced mode can be demonstrated with examples.
-- Tradeoff table is documented.
+- Container starts, health check passes, agent responds to a test query.
+- All service calls go through Private Endpoints (no public internet access).
+- CD pipeline deploys successfully on push to main.
 
 ## Suggested Commit
-feat(day-9): add corrective and self-rag experimental flows
+feat(day-9): Dockerfile, Azure Container Apps deployment, APIM, private networking
 
 ## LinkedIn Prompt
-Prototyped corrective and self-evaluating RAG for reliability.
+Best practice #9 for Enterprise Agentic RAG on Azure: Azure Container Apps is the right deployment target for most Agentic RAG workloads. Serverless K8s, KEDA scaling, built-in ingress, Managed Identity — and it costs nothing when idle. Pair it with Azure API Management for auth and rate limiting, and Private Endpoints to keep all traffic off the public internet.

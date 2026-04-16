@@ -1,6 +1,6 @@
-# Enterprise RAG
+# Enterprise Agentic RAG on Azure
 
-Production-oriented Agentic RAG + Graph RAG portfolio project for enterprise architecture reference.
+Production-grade Agentic RAG system built on Azure — designed as an enterprise architecture reference for Solution Architects, Azure Cloud Architects, and AI Architects.
 
 ## Current state
 - Planning docs created

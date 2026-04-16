@@ -1,26 +1,52 @@
-# Day 7 - 100M Document System Design
+# Day 7 - Observability and Responsible AI
 
-Goal: Produce interview-grade architecture for large-scale retrieval.
+Goal: Make every agent step traceable and enforce responsible AI policies.
 
 ## Outcomes
-- Sharding and indexing strategy for 100M documents.
-- Multi-tier caching policy.
-- Capacity and cost assumptions documented.
+- OpenTelemetry traces span the full agent reasoning loop (every node, every tool call).
+- Azure Application Insights receives traces, metrics, and exceptions.
+- Azure AI Content Safety screens inputs and outputs.
+- Groundedness enforcement: agent answer rejected if not supported by retrieved context.
+- Citation enforcement: every answer must reference source documents.
+
+## Observability Stack
+```
+Agent Step (LangGraph node)
+    │
+    ▼  OpenTelemetry span
+Azure Application Insights
+    │
+    ▼  Kusto queries
+Azure Monitor Dashboard
+    │
+    ▼  Alert rules
+Alert → PagerDuty / Teams
+```
+
+## Responsible AI Layers
+| Layer | Implementation | Purpose |
+|---|---|---|
+| Input filter | Azure AI Content Safety | Block harmful prompts |
+| Output filter | Azure AI Content Safety | Block harmful completions |
+| Groundedness | Custom scorer vs. retrieved context | Prevent hallucination |
+| Citation | Enforce source references in answer | Auditability |
+| Audit log | Immutable log of every query + answer | Compliance |
 
 ## 6-Hour Plan
-1. Define traffic and dataset assumptions.
-2. Design shard and partition strategy.
-3. Design cache tiers and invalidation model.
-4. Document hot/warm index lifecycle.
-5. Add architecture diagram notes.
-6. Push design artifacts.
+1. Add OpenTelemetry SDK, instrument every LangGraph node with spans.
+2. Configure Azure Application Insights exporter.
+3. Integrate Azure AI Content Safety for input screening.
+4. Implement groundedness scorer: compare answer to context, flag if below threshold.
+5. Implement citation enforcer: parse answer for source references, reject if missing.
+6. Test: inject a hallucinated answer, confirm it is blocked.
 
 ## Exit Criteria
-- Can explain latency, throughput, and cost tradeoffs.
-- Architecture can be defended in interview Q&A.
+- Full agent trace visible in Application Insights end-to-end.
+- Hallucinated answer (not grounded in context) is blocked by groundedness check.
+- Harmful input is blocked by Azure AI Content Safety.
 
 ## Suggested Commit
-docs(day-7): add 100M-document architecture and scaling plan
+feat(day-7): OpenTelemetry tracing and Responsible AI enforcement
 
 ## LinkedIn Prompt
-Documented RAG architecture for 100M docs with bounded latency.
+Best practice #7 for Enterprise Agentic RAG on Azure: Responsible AI is not a checkbox — it is a pipeline stage. Azure AI Content Safety on inputs AND outputs. Groundedness scoring before the answer leaves the system. Citation enforcement for auditability. All of this must be in the critical path, not an afterthought.
