@@ -10,10 +10,11 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-  "pytest>=8.2,<9.0",
+  "pytest>=9.0.3,<10.0",
   "ruff>=0.4.0,<1.0",
   "mypy>=1.10,<2.0",
   "bandit>=1.7,<2.0",
+  "pip-audit>=2.8.0,<3.0",
 ]
 
 [build-system]
