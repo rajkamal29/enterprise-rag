@@ -1,6 +1,6 @@
 # Enterprise RAG
 
-Production-oriented Agentic RAG + Graph RAG portfolio project for interview preparation.
+Production-oriented Agentic RAG + Graph RAG portfolio project for enterprise architecture reference.
 
 ## Current state
 - Planning docs created

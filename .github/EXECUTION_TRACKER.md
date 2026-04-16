@@ -19,7 +19,7 @@ Last updated: 2026-04-16
 | 7 | Not started | 0 | N/A | 100M-doc architecture |
 | 8 | Not started | 0 | N/A | Deployment and A/B |
 | 9 | Not started | 0 | N/A | Advanced RAG patterns |
-| 10 | Not started | 0 | N/A | Interview preparation |
+| 10 | Not started | 0 | N/A | Portfolio readiness |
 
 ## Risks
 - Azure OpenAI access delay: Use OpenAI API fallback first.

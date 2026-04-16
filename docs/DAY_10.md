@@ -1,4 +1,4 @@
-# Day 10 - Interview Readiness and Portfolio Polish
+# Day 10 - Portfolio Readiness and Final Polish
 
 Goal: Convert implementation work into interview-ready storytelling.
 
@@ -20,7 +20,7 @@ Goal: Convert implementation work into interview-ready storytelling.
 - Repo is presentation-ready for recruiters/interviewers.
 
 ## Suggested Commit
-docs(day-10): finalize interview prep and portfolio packaging
+docs(day-10): finalize portfolio readiness and packaging
 
 ## LinkedIn Prompt
-Finished a 10-day enterprise RAG build and interview prep sprint.
+Finished a 10-day enterprise RAG build and portfolio sprint.

@@ -20,7 +20,7 @@ Target effort: 6 hours/day (60 hours total)
 7. Day 7: 100M-doc system design artifacts and scaling plan.
 8. Day 8: Deployment, rollout guardrails, A/B testing hooks.
 9. Day 9: Corrective RAG, Self-RAG, and Graph RAG patterns.
-10. Day 10: Interview prep, mock sessions, final portfolio polish.
+10. Day 10: Portfolio readiness, mock sessions, final portfolio polish.
 
 ## Daily File Map
 - Master checklist: DAILY_CHECKLIST.md

@@ -12,7 +12,7 @@ Current date: 2026-04-16
 - [ ] Day 7 - 100M Scale Design
 - [ ] Day 8 - Deployment + A/B Testing
 - [ ] Day 9 - Corrective/Self/Graph RAG
-- [ ] Day 10 - Interview Readiness + Polish
+- [ ] Day 10 - Portfolio Readiness + Polish
 
 ## Daily Time Box (6 Hours)
 - [ ] Block 1 (2h): Plan + design + read today guide
