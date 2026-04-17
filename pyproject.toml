@@ -1,12 +1,11 @@
 [project]
 name = "enterprise-rag"
 version = "0.1.0"
-description = "Enterprise-grade Agentic RAG + Graph RAG portfolio project"
+description = "Enterprise-grade Agentic RAG on Azure portfolio project"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "pydantic>=2.7,<3.0",
-  "langchain>=0.3,<0.4",
   "faiss-cpu>=1.8,<2.0; platform_system != 'Windows'",
 ]
 

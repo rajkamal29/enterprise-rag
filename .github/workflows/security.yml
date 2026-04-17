@@ -33,11 +33,7 @@ jobs:
           pip install -e .[dev]
           pip install pip-audit
       - name: Scan dependencies for known vulnerabilities
-        run: |
-          # Temporary exception: CVE-2026-34070 affects langchain-core in the
-          # currently compatible dependency range for this project.
-          # Remove this ignore once a patched compatible release is available.
-          pip-audit --ignore-vuln CVE-2026-34070
+        run: pip-audit
 
   gitleaks:
     runs-on: ubuntu-latest
