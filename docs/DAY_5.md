@@ -1,54 +1,32 @@
-# Day 5 - Agent Tools and Memory
+# Day 5 - Azure-Based Custom Agent Workflow
 
-Goal: Expand the agent's capabilities with a tool library and add short-term and long-term memory.
+Goal: Build the custom Azure-based Agentic RAG path using LangGraph and compare it to the AI Foundry workflow.
 
 ## Outcomes
-- Tool library: search, calculator, date/time, HTTP API caller.
-- Short-term memory: sliding conversation window (last N turns).
-- Long-term memory: persist important entities to Azure AI Search.
-- Tool result caching to avoid redundant LLM + search calls.
+- LangGraph ReAct agent with Azure OpenAI tool-calling.
+- Azure AI Search tool integration and citation enforcement.
+- Custom runtime state model and trace identifiers.
+- First explicit comparison between Track A and Track B orchestration style.
 
-## Memory Architecture
-```
-┌───────────────────────────────────────┐
-│              Agent Memory             │
-│                                       │
-│  Short-term (Redis / in-process)      │
-│  └─ Last 10 conversation turns        │
-│  └─ Current session context           │
-│                                       │
-│  Long-term (Azure AI Search)          │
-│  └─ User preferences                  │
-│  └─ Key facts extracted from sessions │
-│  └─ Searchable by future sessions     │
-└───────────────────────────────────────┘
-```
-
-## Tool Library
-| Tool | Purpose |
-|---|---|
-| `search_documents` | Azure AI Search (from Day 4) |
-| `calculate` | Safe math evaluation — never use `eval()` |
-| `get_current_date` | Temporal grounding for the agent |
-| `call_api` | Generic HTTP tool with allowlist validation |
-| `search_memory` | Query long-term memory in Azure AI Search |
-| `store_memory` | Persist key fact to long-term memory |
+## Why this day follows AI Foundry
+- Build the managed path first to understand the baseline.
+- Build the custom path next to understand where flexibility and control justify extra engineering.
 
 ## 6-Hour Plan
-1. Implement calculator, date, and HTTP tools with input validation.
-2. Implement `ConversationMemory` — sliding window, serialisable.
-3. Implement `LongTermMemory` — read/write to dedicated AI Search index.
-4. Wire memory into LangGraph agent state (inject on entry, flush on exit).
-5. Add tool result cache (TTL-based, keyed on tool + normalised input).
-6. Add tests: memory persists across agent turns; cache prevents double search.
+1. Implement LangGraph state model and ReAct loop.
+2. Add Azure AI Search tool for retrieval.
+3. Enforce citations and grounded response pattern.
+4. Add request and tool-call tracing IDs.
+5. Compare the same use case across Track A and Track B.
+6. Document where custom orchestration wins and where it costs more.
 
 ## Exit Criteria
-- Agent recalls a fact stated 5 turns earlier via short-term memory.
-- Long-term memory survives process restart (persisted in AI Search).
-- Duplicate tool calls within same session use cache.
+- Custom agent answers grounded questions with citations.
+- Same sample workload runs in both AI Foundry and custom LangGraph paths.
+- Initial managed-vs-custom tradeoffs are documented.
 
 ## Suggested Commit
-feat(day-5): agent tool library and short/long-term memory
+feat(day-5): build Azure-based custom agent workflow with LangGraph
 
 ## LinkedIn Prompt
-Best practice #5 for Enterprise Agentic RAG on Azure: Memory is not optional in enterprise agents. Short-term (sliding window) keeps context in one session. Long-term (vector store) means the agent remembers across sessions. Two different problems — two different solutions.
+Best practice #5 for Agentic RAG on Azure: after the managed baseline, build the custom path. LangGraph gives you explicit state, routing, and testability when the managed surface is not enough.

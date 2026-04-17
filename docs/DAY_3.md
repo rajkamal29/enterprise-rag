@@ -1,49 +1,32 @@
-# Day 3 - Document Ingestion Pipeline + Azure AI Search Indexing
+# Day 3 - Shared Ingestion and Retrieval Foundation
 
-Goal: Build production ingestion from raw documents to searchable Azure AI Search index.
+Goal: Build the shared document and retrieval layer consumed by both the AI Foundry workflow and the custom Azure agent.
 
 ## Outcomes
-- Azure Document Intelligence parses PDFs, Word docs, HTML.
-- Semantic chunking strategy with configurable chunk size and overlap.
-- Embeddings generated via Azure OpenAI (text-embedding-3-large).
-- Azure AI Search index schema: vector field + keyword field + metadata.
-- Ingestion pipeline with idempotent upsert (re-running is safe).
+- Azure Document Intelligence pipeline for PDFs, DOCX, and HTML.
+- Common chunking, metadata, and embedding strategy.
+- Azure AI Search index schema reusable by both tracks.
+- Idempotent ingestion and searchable sample corpus.
 
-## Azure Services Used
-| Service | Role |
-|---|---|
-| Azure Document Intelligence | Extract text from PDF, DOCX, HTML |
-| Azure OpenAI Embeddings | text-embedding-3-large (3072 dims) |
-| Azure AI Search | Index storage + retrieval |
+## Why this day is shared
+- Track A needs a reliable retrieval corpus connected into AI Foundry.
+- Track B needs the same corpus for LangGraph and custom tools.
 
 ## 6-Hour Plan
-1. Implement `DocumentLoader` using Azure Document Intelligence SDK.
-2. Implement chunking: fixed-size with overlap + sentence-boundary aware.
-3. Implement `EmbeddingService` wrapping Azure OpenAI embeddings with retry.
-4. Design Azure AI Search index schema (vector, keyword, metadata fields).
-5. Implement `IndexWriter` with upsert logic (document_id as key).
-6. Add smoke tests — ingest 3 sample docs, verify they are searchable.
-
-## Index Schema Design
-```json
-{
-  "fields": [
-    {"name": "id", "type": "Edm.String", "key": true},
-    {"name": "content", "type": "Edm.String", "searchable": true},
-    {"name": "content_vector", "type": "Collection(Edm.Single)", "dimensions": 3072},
-    {"name": "source", "type": "Edm.String", "filterable": true},
-    {"name": "page", "type": "Edm.Int32", "filterable": true}
-  ]
-}
-```
+1. Implement document parsing with Azure Document Intelligence.
+2. Define chunking strategy and metadata contract shared by both tracks.
+3. Generate embeddings with Azure OpenAI.
+4. Create Azure AI Search index with vector, text, and metadata fields.
+5. Build idempotent ingestion and reindexing flow.
+6. Validate retrieval from both plain SDK calls and AI Foundry-connected resources.
 
 ## Exit Criteria
-- 3 sample documents indexed into Azure AI Search.
-- Keyword search and vector search both return results.
-- Ingestion is idempotent (run twice, no duplicates).
+- Sample corpus indexed once and queryable from both tracks.
+- Chunk schema and metadata format documented.
+- Re-ingestion produces no duplicates.
 
 ## Suggested Commit
-feat(day-3): document ingestion pipeline with Azure Document Intelligence and AI Search
+feat(day-3): build shared ingestion and retrieval foundation for both tracks
 
 ## LinkedIn Prompt
-Best practice #3 for Enterprise Agentic RAG on Azure: Use Azure Document Intelligence for ingestion — not raw PDF parsers. It handles tables, forms, and multi-column layouts that break naive text extraction. Your retrieval quality is only as good as your parsed content.
+Best practice #3 for Agentic RAG on Azure: treat ingestion as a platform asset, not app-specific code. One clean corpus should serve both AI Foundry workflows and custom agent runtimes.

@@ -11,7 +11,17 @@ Target audience: Solution Architect / Azure Cloud Architect / AI Architect
 - Publish one LinkedIn post daily (build-in-public).
 - Write architecture decisions as ADR notes.
 
-## Architecture Stack
+## Architecture Tracks
+
+### Track A — Azure AI Foundry End-to-End
+- **Primary platform**: Azure AI Foundry project
+- **LLM and embeddings**: Azure OpenAI deployments via AI Foundry
+- **Workflow surface**: AI Foundry agent or Prompt Flow style orchestration
+- **Retrieval**: Azure AI Search connected through AI Foundry
+- **Evaluation**: AI Foundry evaluations and prompt/runtime experiments
+- **Safety**: AI Foundry governance plus Azure AI Content Safety
+
+### Track B — Azure-Based Custom Architecture
 - **LLM**: Azure OpenAI (GPT-4o)
 - **Agent Framework**: LangGraph (ReAct loop, multi-agent)
 - **Vector Store**: Azure AI Search (hybrid: keyword + vector + semantic reranker)
@@ -24,15 +34,15 @@ Target audience: Solution Architect / Azure Cloud Architect / AI Architect
 
 ## Day-by-Day Plan
 1. Day 1: Repository setup, CI/CD pipeline, guardrails and circuit breaker. ✅
-2. Day 2: Azure infrastructure foundation — Azure OpenAI, AI Search, Key Vault, Managed Identity, cost model.
-3. Day 3: Document ingestion pipeline — Azure Document Intelligence, chunking, embedding, AI Search indexing.
-4. Day 4: Agent foundation — LangGraph ReAct loop, Azure OpenAI tool-calling, first search tool.
-5. Day 5: Agent tools and memory — tool library, short-term conversation memory, long-term vector memory.
-6. Day 6: Hybrid retrieval and evaluation — AI Search hybrid query, RAGAS evaluation pipeline as CI gate.
-7. Day 7: Observability and Responsible AI — OpenTelemetry tracing, Azure Monitor, Azure AI Content Safety, groundedness.
-8. Day 8: Multi-agent pattern — planner + specialist agents, parallel tool execution, agent trajectory evaluation.
-9. Day 9: Deployment — Dockerfile, Azure Container Apps, Azure API Management, private networking.
-10. Day 10: Portfolio readiness — architecture narrative, SA/AI Architect Q&A bank, cost analysis, final polish.
+2. Day 2: Azure foundation for both tracks — AI Foundry project, Azure OpenAI, AI Search, Key Vault, Managed Identity, cost model.
+3. Day 3: Shared ingestion and retrieval foundation — Document Intelligence, chunking, embeddings, AI Search indexing.
+4. Day 4: Azure AI Foundry end-to-end RAG + agent workflow — project connections, agent flow, evaluation hooks.
+5. Day 5: Azure-based custom agent workflow — LangGraph ReAct loop, tool-calling, citations, first custom runtime.
+6. Day 6: Memory, tools, and retrieval optimization across both tracks — short-term memory, long-term memory, hybrid retrieval.
+7. Day 7: Evaluation, performance, and cost optimization across both tracks — AI Foundry evals, RAGAS, latency and token budgets.
+8. Day 8: Security, observability, and orchestration patterns — Responsible AI, tracing, multi-agent patterns, planner-vs-single-agent tradeoffs.
+9. Day 9: Runtime and deployment patterns — AI Foundry-managed workflow surface plus ACA/APIM custom deployment path.
+10. Day 10: Full architecture refresh — when to use what, tradeoffs, performance, memory, cost, security, orchestration, and agent-pattern guidance.
 
 ## Daily File Map
 - Master checklist: DAILY_CHECKLIST.md
@@ -53,10 +63,9 @@ Target audience: Solution Architect / Azure Cloud Architect / AI Architect
 4. Publish LinkedIn post draft.
 
 ## Success Criteria by Day 10
-- Production-grade Agentic RAG on Azure with multi-step reasoning and tool use.
-- LangGraph ReAct agent with Azure OpenAI function calling.
-- Azure AI Search hybrid retrieval with RAGAS evaluation gates.
-- Full observability: OpenTelemetry traces, Azure Monitor dashboards.
-- Responsible AI: Azure AI Content Safety, groundedness enforcement, citation citations.
-- Deployed to Azure Container Apps with Managed Identity and private networking.
-- Documented architecture decisions and SA/AI Architect-level tradeoff narrative.
+- Working understanding and implementation path for both Azure AI Foundry end-to-end Agentic RAG and Azure-based custom Agentic RAG.
+- Azure AI Foundry project with agent workflow, model connections, and evaluation surface.
+- LangGraph-based custom agent with Azure OpenAI tool-calling and Azure AI Search retrieval.
+- Shared ingestion, memory, safety, and observability patterns documented for both tracks.
+- Comparison framework for performance, memory, cost, security, orchestration patterns, deployment choices, and agent patterns.
+- Final Day 10 refresh that clearly answers when to use each approach and why.

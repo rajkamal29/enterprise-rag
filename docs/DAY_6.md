@@ -1,50 +1,28 @@
-# Day 6 - Hybrid Retrieval + RAGAS Evaluation Pipeline
+# Day 6 - Memory, Tools, and Retrieval Optimization Across Both Tracks
 
-Goal: Upgrade to Azure AI Search hybrid retrieval and add RAGAS as a CI evaluation gate.
+Goal: Add memory and tool patterns that work across both implementations, then optimize retrieval quality.
 
 ## Outcomes
-- Azure AI Search hybrid query: keyword (BM25) + vector + semantic reranker in one call.
-- RAGAS evaluation: faithfulness, answer relevance, context precision scored.
-- Evaluation pipeline runs in CI — blocks merge if scores drop below threshold.
-- Retrieval quality benchmark: hybrid vs. vector-only documented.
-
-## Azure AI Search Hybrid Query
-```python
-# One query hits all three retrieval modes simultaneously
-results = search_client.search(
-    search_text=query,           # BM25 keyword
-    vector_queries=[VectorizedQuery(
-        vector=embedding,
-        fields="content_vector",
-        k_nearest_neighbors=50,
-    )],
-    query_type="semantic",        # Semantic reranker on top
-    semantic_configuration_name="default",
-    top=5,
-)
-```
-
-## RAGAS Metrics
-| Metric | What it measures | Target |
-|---|---|---|
-| Faithfulness | Answer is grounded in retrieved context | ≥ 0.85 |
-| Answer Relevance | Answer addresses the question | ≥ 0.80 |
-| Context Precision | Retrieved chunks are relevant | ≥ 0.75 |
+- Short-term and long-term memory strategy defined for both tracks.
+- Shared tool taxonomy for search, date, calculator, and HTTP tasks.
+- Hybrid retrieval benchmark across managed and custom flows.
+- Retrieval quality improvements documented with reusable metrics.
 
 ## 6-Hour Plan
-1. Implement `HybridRetriever` using Azure AI Search hybrid query.
-2. Benchmark: vector-only vs. keyword-only vs. hybrid on 20 test queries.
-3. Install RAGAS, define evaluation dataset (query, answer, context triples).
-4. Implement evaluation script that outputs metric scores to JSON.
-5. Add CI step: run evaluation, fail if any metric below threshold.
-6. Document benchmark results in ADR.
+1. Define short-term and long-term memory responsibilities.
+2. Add or map tool patterns into both AI Foundry and LangGraph workflows.
+3. Implement Azure AI Search hybrid retrieval benchmark.
+4. Add caching and memory-size boundaries for performance and cost control.
+5. Document how memory differs between managed and custom orchestration.
+6. Capture early when-to-use-what guidance for tools and memory.
 
 ## Exit Criteria
-- Hybrid retrieval outperforms vector-only by ≥ 10% on context precision.
-- RAGAS CI gate blocks a deliberately bad retrieval config.
+- Memory approach is documented for both tracks.
+- Hybrid retrieval is benchmarked and chosen intentionally.
+- Tool and memory tradeoffs are recorded for Day 10 refresh.
 
 ## Suggested Commit
-feat(day-6): hybrid retrieval and RAGAS evaluation CI gate
+feat(day-6): add memory, tools, and retrieval optimization across both tracks
 
 ## LinkedIn Prompt
-Best practice #6 for Enterprise Agentic RAG on Azure: Treat retrieval quality as a CI metric. RAGAS gives you faithfulness, relevance, and context precision scores. If your retrieval changes break the score threshold — the pipeline fails. Ship quality gates, not just code gates.
+Best practice #6 for Agentic RAG on Azure: memory is not one thing. Keep a strict boundary between session memory, persistent memory, and retrieval context or your cost, latency, and correctness all drift upward.

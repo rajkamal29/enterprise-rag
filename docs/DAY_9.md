@@ -1,64 +1,34 @@
-# Day 9 - Deployment: Azure Container Apps + APIM + Private Networking
+# Day 9 - Runtime and Deployment Patterns
 
-Goal: Deploy the Agentic RAG system to Azure with production-grade security and scalability.
+Goal: Cover the runtime and deployment story for both the AI Foundry-managed path and the custom Azure app path.
 
 ## Outcomes
-- Multi-stage Dockerfile (non-root user, minimal base image, no secrets baked in).
-- Deployed to Azure Container Apps with KEDA autoscaling.
-- Azure API Management as the secure front door (auth, rate limiting, versioning).
-- Private Endpoints for all backend services (AI Search, OpenAI, Key Vault, Cosmos).
-- GitHub Actions CD pipeline: build → push to ACR → deploy to ACA.
+- AI Foundry runtime path documented and tested for managed workflow execution.
+- Custom runtime deployed through Azure Container Apps and API Management.
+- Network, identity, and deployment tradeoffs documented for both tracks.
+- Clear recommendation matrix for prototype, enterprise pilot, and production scale.
 
-## Deployment Architecture
-```
-Client
-  │
-  ▼
-Azure API Management  ← Auth (AAD), Rate limiting, Versioning
-  │
-  ▼  (private VNET)
-Azure Container Apps  ← KEDA autoscale, Managed Identity
-  │
-  ├── Azure OpenAI          (Private Endpoint)
-  ├── Azure AI Search        (Private Endpoint)
-  ├── Azure Key Vault        (Private Endpoint)
-  └── Azure Cosmos DB        (Private Endpoint)
-```
-
-## Dockerfile Best Practices
-```dockerfile
-# Multi-stage: builder stage + minimal runtime stage
-FROM python:3.12-slim AS builder
-WORKDIR /app
-COPY pyproject.toml uv.lock ./
-RUN pip install uv && uv sync --frozen --no-dev
-
-FROM python:3.12-slim
-WORKDIR /app
-# Non-root user — never run as root in containers
-RUN useradd --uid 1001 --no-create-home appuser
-COPY --from=builder /app/.venv .venv
-COPY src/ src/
-USER appuser
-ENV PATH="/app/.venv/bin:$PATH"
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
+## Track comparison
+| Track | Runtime focus |
+|---|---|
+| Track A | AI Foundry project and managed workflow surface |
+| Track B | FastAPI or app runtime on ACA/APIM with private networking |
 
 ## 6-Hour Plan
-1. Write `Dockerfile` (multi-stage, non-root, no secrets).
-2. Add `src/api/main.py` — FastAPI app wrapping the LangGraph agent.
-3. Create Azure Container Registry, build and push image.
-4. Deploy to Azure Container Apps with Managed Identity and KEDA scaling rules.
-5. Configure Azure API Management with JWT validation and rate limiting policy.
-6. Verify private endpoint connectivity; add CD workflow to GitHub Actions.
+1. Document the execution model for AI Foundry-managed workflows.
+2. Build or polish the custom runtime for LangGraph-based access.
+3. Add ACA, APIM, and networking guidance for Track B.
+4. Compare deployment complexity, flexibility, cost, and control.
+5. Define when to start in Track A and when to move to Track B.
+6. Save deployment recommendation matrix for Day 10 refresh.
 
 ## Exit Criteria
-- Container starts, health check passes, agent responds to a test query.
-- All service calls go through Private Endpoints (no public internet access).
-- CD pipeline deploys successfully on push to main.
+- Both runtime paths are described with security and ops implications.
+- Deployment decision criteria are documented.
+- Recommendation matrix exists for prototype, pilot, and production.
 
 ## Suggested Commit
-feat(day-9): Dockerfile, Azure Container Apps deployment, APIM, private networking
+feat(day-9): document runtime and deployment patterns for both tracks
 
 ## LinkedIn Prompt
-Best practice #9 for Enterprise Agentic RAG on Azure: Azure Container Apps is the right deployment target for most Agentic RAG workloads. Serverless K8s, KEDA scaling, built-in ingress, Managed Identity — and it costs nothing when idle. Pair it with Azure API Management for auth and rate limiting, and Private Endpoints to keep all traffic off the public internet.
+Best practice #9 for Agentic RAG on Azure: separate workflow design from runtime design. AI Foundry may be the right workflow control plane while Azure Container Apps may be the right runtime for the custom path.
