@@ -123,7 +123,19 @@ class AzureClientFactory:
                 "It should already be installed; run `uv sync`."
             ) from exc
 
-        return AIProjectClient(  # type: ignore[call-arg]
+        # Stored format: <region>.api.azureml.ms;<subscription>;<resource_group>;<project>
+        # AIProjectClient expects an endpoint URL ending with /api/projects/<project>.
+        conn_parts = self._settings.azure_ai_foundry_project_connection_string.split(";")
+        if len(conn_parts) != 4:
+            raise ValueError(
+                "AZURE_AI_FOUNDRY_PROJECT_CONNECTION_STRING has invalid format. "
+                "Expected '<region>.api.azureml.ms;<subscription>;<resource_group>;<project>'."
+            )
+
+        host, _, _, project_name = conn_parts
+        endpoint = f"https://{host}/api/projects/{project_name}"
+
+        return AIProjectClient(
+            endpoint=endpoint,
             credential=self.credential,
-            conn_str=self._settings.azure_ai_foundry_project_connection_string,
         )
