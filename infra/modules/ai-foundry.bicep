@@ -50,9 +50,11 @@ resource hub 'Microsoft.MachineLearningServices/workspaces@2024-07-01-preview' =
   }
   properties: {
     friendlyName: hubName
+    description: 'Enterprise Agentic RAG Hub'
     storageAccount: storageAccountId
     keyVault: keyVaultId
     publicNetworkAccess: 'Enabled'
+    primaryUserAssignedIdentity: managedIdentityId
   }
 }
 
@@ -62,10 +64,12 @@ resource openAiConnection 'Microsoft.MachineLearningServices/workspaces/connecti
   name: 'azure-openai'
   properties: {
     category: 'AzureOpenAI'
-    authType: 'ManagedIdentity'
-    target: '${environment().resourceManager}${openAiAccountId}'
+    authType: 'ProjectManagedIdentity'
+    target: openAiAccountId
+    credentials: {}
     metadata: {
       ResourceId: openAiAccountId
+      ApiType: 'Azure'
     }
   }
 }
@@ -76,10 +80,12 @@ resource searchConnection 'Microsoft.MachineLearningServices/workspaces/connecti
   name: 'azure-ai-search'
   properties: {
     category: 'CognitiveSearch'
-    authType: 'ManagedIdentity'
-    target: '${environment().resourceManager}${searchServiceId}'
+    authType: 'ProjectManagedIdentity'
+    target: searchServiceId
+    credentials: {}
     metadata: {
       ResourceId: searchServiceId
+      ApiType: 'Azure'
     }
   }
 }
@@ -91,15 +97,11 @@ resource project 'Microsoft.MachineLearningServices/workspaces@2024-07-01-previe
   tags: tags
   kind: 'Project'
   identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentityId}': {}
-    }
+    type: 'SystemAssigned'
   }
   properties: {
     friendlyName: projectName
     hubResourceId: hub.id
-    publicNetworkAccess: 'Enabled'
   }
 }
 

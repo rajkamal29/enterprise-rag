@@ -38,6 +38,9 @@ param(
 
     [string] $ResourceGroup = "rg-erag-$Environment",
 
+    [ValidateLength(1, 8)]
+    [string] $ProjectPrefix = 'erag',
+
     [string] $SubscriptionId = ''
 )
 
@@ -45,9 +48,16 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 # ── Prerequisites check ───────────────────────────────────────────────────────
-foreach ($tool in @('az', 'bicep')) {
-    if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) {
-        Write-Error "'$tool' is not installed or not on PATH."
+if (-not (Get-Command 'az' -ErrorAction SilentlyContinue)) {
+    Write-Error "'az' is not installed or not on PATH."
+}
+
+az bicep version *> $null
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Bicep is not available via Azure CLI. Installing it now..." -ForegroundColor Yellow
+    az bicep install
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Azure CLI Bicep support is unavailable. Run 'az bicep install' and try again."
     }
 }
 
@@ -74,12 +84,13 @@ $deploymentName = "erag-day2-$(Get-Date -Format 'yyyyMMdd-HHmm')"
 $bicepFile = Join-Path $PSScriptRoot 'main.bicep'
 
 Write-Host "Starting deployment '$deploymentName'..." -ForegroundColor Cyan
+Write-Host "Using project prefix '$ProjectPrefix'" -ForegroundColor Cyan
 
 $result = az deployment group create `
     --name $deploymentName `
     --resource-group $ResourceGroup `
     --template-file $bicepFile `
-    --parameters environment=$Environment location=$Location deployerPrincipalId=$deployerPrincipalId `
+    --parameters environment=$Environment location=$Location projectPrefix=$ProjectPrefix deployerPrincipalId=$deployerPrincipalId `
     --output json | ConvertFrom-Json
 
 if ($LASTEXITCODE -ne 0) {

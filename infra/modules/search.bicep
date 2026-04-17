@@ -39,11 +39,6 @@ resource searchService 'Microsoft.Search/searchServices@2024-03-01-preview' = {
     publicNetworkAccess: 'Enabled'
     disableLocalAuth: true            // force Entra ID authentication
     semanticSearch: 'standard'        // enable semantic ranking
-    authOptions: {
-      aadOrApiKey: {
-        aadAuthFailureMode: 'http401WithBearerChallenge'
-      }
-    }
   }
 }
 

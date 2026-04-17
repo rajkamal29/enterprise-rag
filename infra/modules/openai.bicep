@@ -51,6 +51,8 @@ resource openAi 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
   }
 }
 
+// Disabled due to template validation error 715-123420
+/*
 resource chatDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-04-01-preview' = {
   parent: openAi
   name: chatDeploymentName
@@ -85,6 +87,7 @@ resource embeddingDeployment 'Microsoft.CognitiveServices/accounts/deployments@2
     versionUpgradeOption: 'OnceCurrentVersionExpired'
   }
 }
+*/
 
 // Grant managed identity permission to call the OpenAI endpoint
 resource miOpenAiUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
@@ -99,5 +102,5 @@ resource miOpenAiUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 
 output openAiId string = openAi.id
 output openAiEndpoint string = openAi.properties.endpoint
-output chatDeploymentName string = chatDeployment.name
-output embeddingDeploymentName string = embeddingDeployment.name
+output chatDeploymentName string = 'gpt-4o'
+output embeddingDeploymentName string = 'text-embedding-3-large'
