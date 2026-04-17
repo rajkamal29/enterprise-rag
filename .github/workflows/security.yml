@@ -51,4 +51,4 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           gitleaks version
       - name: Scan for secrets with gitleaks
-        run: gitleaks dir . --no-banner --redact --exit-code 1
+        run: gitleaks detect --source . --no-git --config .gitleaks.toml --no-banner --redact --exit-code 1
