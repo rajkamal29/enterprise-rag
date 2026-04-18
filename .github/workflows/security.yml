@@ -50,5 +50,7 @@ jobs:
           install -m 0755 gitleaks "$HOME/.local/bin/gitleaks"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           gitleaks version
+      - name: Remove virtual environments before scanning
+        run: rm -rf .venv .audit-venv .audit-venv-ci
       - name: Scan for secrets with gitleaks
         run: gitleaks detect --source . --no-git --config .gitleaks.toml --no-banner --redact --exit-code 1
