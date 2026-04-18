@@ -4,8 +4,8 @@ Current date: 2026-04-16
 
 ## Day Status
 - [x] Day 1 - Setup + Guardrails + CI/CD
-- [ ] Day 2 - Azure Foundation for Both Tracks
-- [ ] Day 3 - Shared Ingestion + Retrieval Foundation
+- [x] Day 2 - Azure Foundation for Both Tracks
+- [x] Day 3 - Shared Ingestion + Retrieval Foundation
 - [ ] Day 4 - Azure AI Foundry End-to-End Workflow
 - [ ] Day 5 - Azure-Based Custom Agent Workflow
 - [ ] Day 6 - Memory + Tools + Retrieval Optimization
