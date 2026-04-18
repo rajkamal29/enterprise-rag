@@ -1,0 +1,47 @@
+# LangGraph for Multi-Agent Orchestration
+
+## Overview
+LangGraph is a library for building stateful, multi-actor applications with LLMs. It extends LangChain with explicit support for cycles, parallel execution, and dynamic routing.
+
+## Core Concepts
+
+### Graphs and Nodes
+A LangGraph application is a directed acyclic graph (DAG) or cyclic graph where nodes represent functions and edges represent data flow. Each node can be an LLM call, tool invocation, or custom logic.
+
+### State Management
+State is the shared data that flows through the graph. At each node, you receive the current state, perform computations, and return an updated state. This enables multi-step reasoning and memory.
+
+### ReAct Pattern
+The ReAct (Reasoning + Acting) pattern alternates between thinking and doing. The agent reasons about the next step, takes an action (tool call), observes the result, and repeats. LangGraph implements this as a cycle with explicit state tracking.
+
+## Building a Custom Agent
+
+### Step 1: Define State
+```python
+from typing import TypedDict, Annotated
+from langgraph.graph import StateGraph
+
+class AgentState(TypedDict):
+    input: str
+    thoughts: list[str]
+    actions: list[str]
+    observations: list[str]
+    final_output: str
+```
+
+### Step 2: Implement Tools
+Tools are functions the agent can call. They should have clear names and descriptions so the LLM can learn when to invoke them.
+
+### Step 3: Build the Graph
+Use StateGraph to define nodes and edges. Include a routing node that decides between reasoning, tool calling, and termination.
+
+## Production Patterns
+
+### Memory Management
+Store conversations and observations in a long-term store like Azure AI Search. Retrieve relevant history to enhance context and avoid token bloat.
+
+### Tool Library
+Organize tools into categories: retrieval, computation, integration. Tool descriptions should be concise but informative.
+
+### Monitoring and Debugging
+Log state transitions and tool outcomes. Use LangSmith or OpenTelemetry to trace execution paths and identify bottlenecks.

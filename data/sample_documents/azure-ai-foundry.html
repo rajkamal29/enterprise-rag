@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Azure AI Foundry Best Practices</title>
+</head>
+<body>
+    <h1>Azure AI Foundry Best Practices</h1>
+    
+    <h2>Introduction</h2>
+    <p>Azure AI Foundry is a cloud-native platform for building enterprise-grade AI applications. It provides integrated tools for prompt engineering, model deployment, and application integration.</p>
+    
+    <h2>Key Concepts</h2>
+    
+    <h3>Projects and Hubs</h3>
+    <p>An Azure AI Foundry Hub is a workspace that contains all your AI assets: models, datasets, endpoints, and deployments. Projects within a hub organize work for specific applications or use cases.</p>
+    
+    <h3>Prompt Flow</h3>
+    <p>Prompt Flow is a visual workflow builder for creating LLM-based applications. It supports chat flows, standard flows, and integrations with Azure OpenAI, AI Search, and other Azure services. Flows can be tested, evaluated, and deployed as batch or real-time endpoints.</p>
+    
+    <h3>Evaluation and Monitoring</h3>
+    <p>Azure AI Foundry includes built-in evaluation capabilities. You can assess model outputs across groundedness, relevance, coherence, and custom metrics. Real-time monitoring tracks performance and latency in production.</p>
+    
+    <h2>Common Patterns</h2>
+    
+    <h3>Retrieval-Augmented Generation</h3>
+    <p>RAG augments LLM prompts with context from external data sources. In Azure AI Foundry, connect Azure AI Search as a retrieval layer. Implement chunking, embedding, and semantic ranking for better relevance.</p>
+    
+    <h3>Tool Calling</h3>
+    <p>Azure OpenAI supports function calling. Define tools in your Prompt Flow, and the model can dynamically decide which to invoke based on user intent. Tools can query databases, call APIs, or retrieve documents.</p>
+    
+    <h2>Deployment and Scaling</h2>
+    <p>Deploy endpoints as managed compute or to your own infrastructure. Use Azure API Management for rate limiting, analytics, and security policies.</p>
+</body>
+</html>

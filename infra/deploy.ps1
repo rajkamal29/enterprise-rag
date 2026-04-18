@@ -116,6 +116,7 @@ AZURE_OPENAI_CHAT_DEPLOYMENT=$($outputs.chatDeploymentName.value)
 AZURE_OPENAI_EMBEDDING_DEPLOYMENT=$($outputs.embeddingDeploymentName.value)
 AZURE_SEARCH_ENDPOINT=$($outputs.searchEndpoint.value)
 AZURE_SEARCH_INDEX_NAME=rag-index
+AZURE_DOCUMENTINTELLIGENCE_ENDPOINT=$($outputs.documentIntelligenceEndpoint.value)
 AZURE_AI_FOUNDRY_PROJECT_CONNECTION_STRING=$($outputs.aiFoundryProjectConnectionString.value)
 "@
 

@@ -39,6 +39,9 @@ class AzureSettings(BaseSettings):
     azure_search_endpoint: str = ""
     azure_search_index_name: str = "rag-index"
 
+    # ── Azure Document Intelligence ────────────────────────────────────────────
+    azure_documentintelligence_endpoint: str = ""
+
     # ── Azure Key Vault ───────────────────────────────────────────────────────
     azure_keyvault_url: str = ""
 
@@ -76,3 +79,7 @@ class AzureSettings(BaseSettings):
     @property
     def foundry_is_configured(self) -> bool:
         return bool(self.azure_ai_foundry_project_connection_string)
+
+    @property
+    def documentintelligence_is_configured(self) -> bool:
+        return bool(self.azure_documentintelligence_endpoint)

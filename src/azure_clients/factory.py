@@ -139,3 +139,27 @@ class AzureClientFactory:
             endpoint=endpoint,
             credential=self.credential,
         )
+
+    # ── Document Intelligence (Day 3 Ingestion) ────────────────────────────────
+    def document_intelligence_client(self) -> object:
+        """DocumentIntelligenceClient for document parsing.
+
+        Returns an ``azure.ai.documentintelligence.DocumentIntelligenceClient`` instance.
+        """
+        if not self._settings.documentintelligence_is_configured:
+            raise RuntimeError(
+                "AZURE_DOCUMENTINTELLIGENCE_ENDPOINT is not set. "
+                "Run infra/deploy.ps1 and source the generated .env file."
+            )
+        try:
+            from azure.ai.documentintelligence import DocumentIntelligenceClient
+        except ImportError as exc:
+            raise ImportError(
+                "azure-ai-documentintelligence is required for document parsing. "
+                "Run `uv sync` to install."
+            ) from exc
+
+        return DocumentIntelligenceClient(
+            endpoint=self._settings.azure_documentintelligence_endpoint,
+            credential=self.credential,
+        )

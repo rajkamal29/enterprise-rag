@@ -1,0 +1,35 @@
+## Azure OpenAI Deployment Strategy
+
+Deploying Azure OpenAI requires careful planning for capacity, geography, and cost.
+
+### Capacity Planning
+- GPT-4o: Recommended starting with 10 TPK (tokens per minute / 1000) for non-production and 50+ TPK for production.
+- Text-embedding-3-large: Embedding loads scale with document ingestion. Start with 30 TPK.
+- Monitor usage patterns and adjust based on peak loads and cost constraints.
+
+### Multi-Region Strategy
+Deploy models in multiple regions for redundancy and latency optimization. Use Azure Traffic Manager or API Management to route requests.
+
+### Cost Optimization
+- Use provisioned throughput for predictable, high-volume workloads.
+- Batch requests when possible to reduce per-call overhead.
+- Consider using smaller models (GPT-4 turbo, GPT-3.5) for non-critical tasks.
+- Monitor token usage and implement budgets.
+
+### Integration with Azure Services
+- Connect to AI Search for RAG scenarios.
+- Use Key Vault for secure API key storage.
+- Enable Azure Monitor for logging and alerting.
+- Integrate with AI Foundry for prompt management and evaluation.
+
+### Security Best Practices
+- Use Managed Identity instead of API keys.
+- Enforce network isolation with VNets and Private Endpoints.
+- Enable role-based access control (RBAC) for all resources.
+- Audit API calls and model outputs for compliance.
+
+### Monitoring and Observability
+- Enable diagnostics logging for quota usage, latency, and errors.
+- Set up alerts for quota limits and error rates.
+- Use Azure Application Insights to track custom metrics.
+- Implement OpenTelemetry for distributed tracing across services.

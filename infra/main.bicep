@@ -25,6 +25,7 @@ var keyVaultName = 'kv-${suffix}'           // 3-24 chars
 var storageAccountName = replace('st${suffix}', '-', '')  // no hyphens, lower
 var openAiAccountName = 'oai-${suffix}'
 var searchServiceName = 'srch-${suffix}'
+var documentIntelligenceName = 'di-${suffix}'
 var hubName = 'hub-${suffix}'
 var projectName = 'proj-${suffix}'
 
@@ -89,6 +90,17 @@ module search 'modules/search.bicep' = {
   }
 }
 
+// ── Azure Document Intelligence (Day 3 Ingestion) ──────────────────────────────
+module documentIntelligence 'modules/documentintelligence.bicep' = {
+  name: 'documentintelligence'
+  params: {
+    location: location
+    documentIntelligenceName: documentIntelligenceName
+    managedIdentityPrincipalId: identity.outputs.principalId
+    tags: tags
+  }
+}
+
 // ── Azure AI Foundry (Hub + Project) ─────────────────────────────────────────
 module aiFoundry 'modules/ai-foundry.bicep' = {
   name: 'aifoundry'
@@ -115,4 +127,5 @@ output openAiEndpoint string = openAi.outputs.openAiEndpoint
 output chatDeploymentName string = openAi.outputs.chatDeploymentName
 output embeddingDeploymentName string = openAi.outputs.embeddingDeploymentName
 output searchEndpoint string = search.outputs.searchServiceEndpoint
+output documentIntelligenceEndpoint string = documentIntelligence.outputs.documentIntelligenceEndpoint
 output aiFoundryProjectConnectionString string = aiFoundry.outputs.projectConnectionString
