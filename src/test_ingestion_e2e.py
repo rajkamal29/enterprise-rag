@@ -53,7 +53,7 @@ def test_ingestion_end_to_end() -> None:
     )
     
     embedding_gen = EmbeddingGenerator(
-        openai_client=factory.openai_client,
+        openai_client=factory.openai_embedding_client,
         embedding_deployment=settings.azure_openai_embedding_deployment,
     )
     
@@ -141,7 +141,7 @@ def test_chunk_schema() -> None:
 
 
 if __name__ == "__main__":
-    logger.info("Starting Day 3 ingestion tests...")
+    logger.info("Starting ingestion tests...")
     test_chunk_schema()
-    # Note: test_ingestion_end_to_end() requires actual Document Intelligence credentials
+    test_ingestion_end_to_end()
     logger.info("Tests complete")

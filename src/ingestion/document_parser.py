@@ -39,6 +39,8 @@ class DocumentParser:
             return self._parse_docx(file_path)
         elif file_ext in [".html", ".htm"]:
             return self._parse_html(file_path)
+        elif file_ext in [".txt", ".md"]:
+            return self._parse_text(file_path)
         else:
             raise ValueError(f"Unsupported file format: {file_ext}")
 
@@ -78,6 +80,25 @@ class DocumentParser:
             "title": file_path.stem,
             "content": self._extract_text_from_result(result),
             "pages": len(result.pages) if result.pages else 1,
+            "metadata": {
+                "file_name": file_path.name,
+                "file_size_bytes": file_path.stat().st_size,
+            },
+        }
+
+    def _parse_text(self, file_path: Path) -> dict[str, object]:
+        """Parse plain text or markdown file."""
+        logger.info(f"Parsing text: {file_path.name}")
+
+        with open(file_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        return {
+            "source": str(file_path),
+            "format": file_path.suffix.lstrip("."),
+            "title": file_path.stem,
+            "content": content,
+            "pages": 1,
             "metadata": {
                 "file_name": file_path.name,
                 "file_size_bytes": file_path.stat().st_size,

@@ -63,6 +63,27 @@ class AzureClientFactory:
             azure_ad_token_provider=token_provider,
         )
 
+    @cached_property
+    def openai_embedding_client(self) -> AzureOpenAI:
+        """AzureOpenAI client scoped to the embedding deployment."""
+        if not self._settings.openai_is_configured:
+            raise RuntimeError(
+                "AZURE_OPENAI_ENDPOINT is not set. "
+                "Run infra/deploy.ps1 and source the generated .env file."
+            )
+        from azure.identity import get_bearer_token_provider
+
+        token_provider = get_bearer_token_provider(
+            self.credential,
+            "https://cognitiveservices.azure.com/.default",
+        )
+        # No azure_deployment here — let model= in each call set the deployment URL.
+        return AzureOpenAI(
+            azure_endpoint=self._settings.azure_openai_endpoint,
+            api_version=self._settings.azure_openai_api_version,
+            azure_ad_token_provider=token_provider,
+        )
+
     # ── Azure AI Search ───────────────────────────────────────────────────────
     @cached_property
     def search_client(self) -> SearchClient:
