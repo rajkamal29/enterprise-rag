@@ -12,7 +12,7 @@ Current date: 2026-04-19
 - [x] Day 7 - OpenTelemetry Tracing + Azure AI Content Safety
 - [x] Day 8 - Multi-Agent Planner Pattern
 - [x] Day 9 - Azure Container Apps + APIM Deployment
-- [ ] Day 10 - Architecture Refresh + Tradeoff Compendium
+- [x] Day 10 - Architecture Refresh + Tradeoff Compendium
 
 ## Daily Time Box (6 Hours)
 - [ ] Block 1 (2h): Plan + design + read today guide

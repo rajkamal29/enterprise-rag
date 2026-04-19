@@ -86,4 +86,4 @@ data/
 ## Delivery tracks
 - Track A: Azure AI Foundry end-to-end Agentic RAG
 - Track B: Azure-based custom Agentic RAG with LangGraph and Azure services
-- Day 10: refresh all topics with when-to-use-what, tradeoffs, and architecture guidance
+- Day 10: finalized when-to-use-what guidance and tradeoff compendium across both tracks
