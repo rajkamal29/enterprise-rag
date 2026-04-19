@@ -34,14 +34,14 @@ Target audience: Solution Architect / Azure Cloud Architect / AI Architect
 
 ## Day-by-Day Plan
 1. Day 1: Repository setup, CI/CD pipeline, guardrails and circuit breaker. ✅
-2. Day 2: Azure foundation for both tracks — AI Foundry project, Azure OpenAI, AI Search, Key Vault, Managed Identity, cost model.
-3. Day 3: Shared ingestion and retrieval foundation — Document Intelligence, chunking, embeddings, AI Search indexing.
-4. Day 4: Azure AI Foundry end-to-end RAG + agent workflow — project connections, agent flow, evaluation hooks.
-5. Day 5: Azure-based custom agent workflow — LangGraph ReAct loop, tool-calling, citations, first custom runtime.
-6. Day 6: Memory, tools, and retrieval optimization across both tracks — short-term memory, long-term memory, hybrid retrieval.
-7. Day 7: Evaluation, performance, and cost optimization across both tracks — AI Foundry evals, RAGAS, latency and token budgets.
-8. Day 8: Security, observability, and orchestration patterns — Responsible AI, tracing, multi-agent patterns, planner-vs-single-agent tradeoffs.
-9. Day 9: Runtime and deployment patterns — AI Foundry-managed workflow surface plus ACA/APIM custom deployment path.
+2. Day 2: Azure foundation for both tracks — AI Foundry project, Azure OpenAI, AI Search, Key Vault, Managed Identity, cost model. ✅
+3. Day 3: Shared ingestion and retrieval foundation — Document Intelligence, chunking, embeddings, AI Search indexing. ✅
+4. Day 4: Azure AI Foundry end-to-end RAG + agent workflow — project connections, agent flow, evaluation hooks. ✅
+5. Day 5: Azure-based custom agent workflow — LangGraph ReAct loop, tool-calling, citations, side-by-side track comparison. ✅
+6. Day 6: Evaluation gate and quality thresholds — citation rate and relevance gate in CI, threshold-driven failure. ✅
+7. Day 7: OpenTelemetry tracing + Azure AI Content Safety — structured spans on both tracks, input safety guardrail.
+8. Day 8: Multi-agent planner pattern — planner agent routing to specialist agents, state handoff, tradeoff documentation.
+9. Day 9: Azure Container Apps + Azure API Management deployment — containerize custom runtime, APIM gateway, managed identity at runtime.
 10. Day 10: Full architecture refresh — when to use what, tradeoffs, performance, memory, cost, security, orchestration, and agent-pattern guidance.
 
 ## Daily File Map

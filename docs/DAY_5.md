@@ -30,3 +30,13 @@ feat(day-5): build Azure-based custom agent workflow with LangGraph
 
 ## LinkedIn Prompt
 Best practice #5 for Agentic RAG on Azure: after the managed baseline, build the custom path. LangGraph gives you explicit state, routing, and testability when the managed surface is not enough.
+
+## Shipped (Day 5 — 2026-04-18)
+- `src/langgraph_agent/state.py` — `AgentState` TypedDict
+- `src/langgraph_agent/search_tool.py` — Azure AI Search retrieval tool (field-name fallback for `document_title`/`chunk_text`/`source_document`)
+- `src/langgraph_agent/react_agent.py` — LangGraph `StateGraph` ReAct loop with tool-calling
+- `src/langgraph_agent/agent.py` — `LangGraphRagAgent` facade matching Track A interface
+- `src/compare_tracks.py` — side-by-side runner: same 3 questions through both tracks, `--json-out` and `--csv-out` flags
+- `data/track_compare.json` + `data/track_compare.csv` — comparison evidence committed
+- `tests/langgraph_agent/` — 6 unit tests
+- Commits: `feat(day-5)` + `chore(ingestion)` — CI green, 67 tests passing

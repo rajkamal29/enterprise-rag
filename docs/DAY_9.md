@@ -1,34 +1,44 @@
-# Day 9 - Runtime and Deployment Patterns
+# Day 9 - Azure Container Apps + Azure API Management Deployment
 
-Goal: Cover the runtime and deployment story for both the AI Foundry-managed path and the custom Azure app path.
+Goal: Package the custom LangGraph agent as a containerised API and deploy it behind Azure API Management with Managed Identity.
 
 ## Outcomes
-- AI Foundry runtime path documented and tested for managed workflow execution.
-- Custom runtime deployed through Azure Container Apps and API Management.
-- Network, identity, and deployment tradeoffs documented for both tracks.
-- Clear recommendation matrix for prototype, enterprise pilot, and production scale.
+- `LangGraphRagAgent` exposed as a FastAPI endpoint.
+- Docker image built and pushed to Azure Container Registry.
+- Azure Container App deployed with Managed Identity (no secrets in environment).
+- Azure API Management gateway in front of the Container App.
+- Network and identity tradeoffs documented vs AI Foundry managed path.
 
 ## Track comparison
-| Track | Runtime focus |
+| Track | Runtime |
 |---|---|
-| Track A | AI Foundry project and managed workflow surface |
-| Track B | FastAPI or app runtime on ACA/APIM with private networking |
+| Track A | Azure AI Foundry managed project runtime |
+| Track B | FastAPI on ACA, APIM gateway, private networking |
 
 ## 6-Hour Plan
-1. Document the execution model for AI Foundry-managed workflows.
-2. Build or polish the custom runtime for LangGraph-based access.
-3. Add ACA, APIM, and networking guidance for Track B.
-4. Compare deployment complexity, flexibility, cost, and control.
-5. Define when to start in Track A and when to move to Track B.
-6. Save deployment recommendation matrix for Day 10 refresh.
+1. Add `src/api/app.py` — FastAPI app with `/ask` endpoint wrapping `LangGraphRagAgent`.
+2. Write `Dockerfile` — multi-stage, non-root user, uv-based install.
+3. Add `infra/aca.bicep` — Container App + Container Registry + APIM.
+4. Deploy to Azure and verify end-to-end request via APIM URL.
+5. Verify Managed Identity is the only credential (no connection strings in env).
+6. Document deployment complexity, runtime cost, and when ACA/APIM is justified vs AI Foundry.
+
+## Files to create
+| File | Purpose |
+|---|---|
+| `src/api/__init__.py` | Package marker |
+| `src/api/app.py` | FastAPI `/ask` endpoint |
+| `Dockerfile` | Production container image |
+| `infra/aca.bicep` | ACA + ACR + APIM Bicep module |
+| `tests/api/test_app.py` | FastAPI TestClient unit tests |
 
 ## Exit Criteria
-- Both runtime paths are described with security and ops implications.
-- Deployment decision criteria are documented.
-- Recommendation matrix exists for prototype, pilot, and production.
+- Container starts locally and responds to `/ask` requests.
+- Bicep module deploys ACA, ACR, and APIM without errors.
+- All tests pass, ruff/mypy/bandit clean.
 
 ## Suggested Commit
-feat(day-9): document runtime and deployment patterns for both tracks
+feat(day-9): add FastAPI runtime and ACA/APIM deployment for Track B
 
 ## LinkedIn Prompt
-Best practice #9 for Agentic RAG on Azure: separate workflow design from runtime design. AI Foundry may be the right workflow control plane while Azure Container Apps may be the right runtime for the custom path.
+Best practice #9 for Agentic RAG on Azure: separate the agent runtime from the agent logic. Packaging LangGraph inside a FastAPI container lets you deploy behind Azure API Management with rate limiting, auth, and monitoring — while the agent code stays clean.

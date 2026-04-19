@@ -1,17 +1,17 @@
 # Daily Checklist (10 Days)
 
-Current date: 2026-04-16
+Current date: 2026-04-19
 
 ## Day Status
 - [x] Day 1 - Setup + Guardrails + CI/CD
 - [x] Day 2 - Azure Foundation for Both Tracks
 - [x] Day 3 - Shared Ingestion + Retrieval Foundation
-- [ ] Day 4 - Azure AI Foundry End-to-End Workflow
-- [ ] Day 5 - Azure-Based Custom Agent Workflow
-- [ ] Day 6 - Memory + Tools + Retrieval Optimization
-- [ ] Day 7 - Evaluation + Performance + Cost Optimization
-- [ ] Day 8 - Security + Observability + Orchestration Patterns
-- [ ] Day 9 - Runtime + Deployment Patterns
+- [x] Day 4 - Azure AI Foundry End-to-End Workflow
+- [x] Day 5 - Azure-Based Custom Agent Workflow (LangGraph ReAct)
+- [x] Day 6 - Evaluation Gate and Quality Thresholds
+- [ ] Day 7 - OpenTelemetry Tracing + Azure AI Content Safety
+- [ ] Day 8 - Multi-Agent Planner Pattern
+- [ ] Day 9 - Azure Container Apps + APIM Deployment
 - [ ] Day 10 - Architecture Refresh + Tradeoff Compendium
 
 ## Daily Time Box (6 Hours)

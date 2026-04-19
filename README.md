@@ -9,7 +9,10 @@ Production-grade Agentic RAG portfolio project covering both Azure AI Foundry en
 | Day 1 | ✅ Complete | Repo scaffold, CI/CD (ruff, mypy, pytest, bandit, pip-audit, CodeQL), input guardrails, circuit breaker, pre-commit hooks |
 | Day 2 | ✅ Complete | Azure infrastructure (Bicep): AI Foundry, Azure OpenAI, AI Search, Key Vault, Document Intelligence, Storage, Managed Identity; `AzureSettings`, `AzureClientFactory` |
 | Day 3 | ✅ Complete | Shared ingestion pipeline: `DocumentParser` (Document Intelligence), `ChunkingStrategy` (paragraph-aware), `EmbeddingGenerator` (text-embedding-3-large), `SearchIndexer` (HNSW), `IngestionPipeline` (SHA256 idempotence, content-change detection, structured logging) |
-| Day 4+ | 🔜 Pending | See `EXECUTION_PLAN.md` and `docs/DAY_4.md` |
+| Day 4 | ✅ Complete | Track A: `FoundryRagAgent` (Azure AI Foundry agent SDK), grounded responses with citations, `evaluate_response` with relevance scoring |
+| Day 5 | ✅ Complete | Track B: `LangGraphRagAgent` (ReAct loop), Azure AI Search tool, citation enforcement, `compare_tracks.py` side-by-side runner with JSON/CSV export |
+| Day 6 | ✅ Complete | `evaluation_gate.py` CI gate: per-track citation rate + relevance thresholds enforced in CI; 70 tests passing |
+| Day 7+ | 🔜 Pending | See `EXECUTION_PLAN.md` and `docs/DAY_7.md` |
 
 ## Architecture
 
@@ -54,11 +57,17 @@ src/
   ingestion/       # DocumentParser, ChunkingStrategy, EmbeddingGenerator,
                    # SearchIndexer, IngestionPipeline
   cost_model/      # Token and cost tracking utilities
+  foundry/         # FoundryRagAgent (Track A), FoundryResponse, evaluate_response
+  langgraph_agent/ # LangGraphRagAgent (Track B), ReAct graph, search_tool
+  compare_tracks.py     # Side-by-side runner for Track A vs Track B (JSON/CSV output)
+  evaluation_gate.py    # CI quality gate — citation rate + relevance thresholds
 infra/             # Bicep modules for all Azure services
 docs/              # Day guides (DAY_1.md … DAY_10.md), ADRs, reference docs
-tests/             # Unit tests (pytest)
+tests/             # Unit tests (pytest, 70 passing)
 data/
-  sample_documents/  # HTML, TXT corpus for ingestion tests
+  sample_documents/     # HTML, TXT corpus for ingestion tests
+  track_compare.json    # Latest Track A vs B comparison output
+  track_compare.csv     # Same data in CSV form
 ```
 
 ## Key documents

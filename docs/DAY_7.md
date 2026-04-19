@@ -1,36 +1,49 @@
-# Day 7 - Evaluation, Performance, and Cost Optimization Across Both Tracks
+# Day 7 - OpenTelemetry Tracing + Azure AI Content Safety
 
-Goal: Measure both tracks rigorously and optimize them for latency, token usage, and retrieval quality.
+Goal: Add structured observability to both tracks and enforce a content safety guardrail on all agent inputs.
 
 ## Outcomes
-- AI Foundry evaluation surface used for Track A.
-- RAGAS or custom eval pipeline used for Track B.
-- Latency budget and token budget set per request stage.
-- Caching, chunk size, top-k, and memory-size tradeoffs measured.
+- OpenTelemetry spans on every `ask()` call in Track A and Track B.
+- Azure Application Insights as the OTel exporter.
+- Azure AI Content Safety guardrail blocks unsafe inputs before they reach the agent.
+- Both tracks emit the same span schema for fair latency comparison.
 
-## Optimization themes
-| Topic | Questions to answer |
-|---|---|
-| Performance | Where are the slowest stages in each track? |
-| Cost | Which steps dominate token or runtime spend? |
-| Retrieval | What top-k and chunking strategy gives best quality per cost? |
-| Memory | How much history is enough before accuracy flattens and cost rises? |
+## Why this day matters
+- You cannot tune what you cannot measure.
+- Responsible AI controls should be enforced at the infrastructure layer, not left to individual callers.
+- A shared OTel schema on both tracks enables apples-to-apples latency comparison in Day 10.
 
 ## 6-Hour Plan
-1. Run AI Foundry evaluations for Track A.
-2. Run RAGAS or custom benchmark for Track B.
-3. Measure latency per stage and define budget thresholds.
-4. Compare chunk size, top-k, cache hit rate, and memory window size.
-5. Document cost-performance-quality tradeoffs.
-6. Save the comparison inputs for Day 10 refresh.
+1. Add `src/observability/tracing.py` — OTel tracer factory pointing to Azure Application Insights.
+2. Instrument `FoundryRagAgent.ask()` (Track A) with a root span and child spans for retrieval + generation.
+3. Instrument `LangGraphRagAgent.ask()` (Track B) with equivalent spans.
+4. Add `src/guardrails/content_safety.py` — `ContentSafetyGuardrail` wrapping Azure AI Content Safety.
+5. Wire the guardrail as a pre-check in both agents.
+6. Add unit tests for tracing helpers and the content safety guardrail.
+
+## Files to create
+| File | Purpose |
+|---|---|
+| `src/observability/__init__.py` | Package marker |
+| `src/observability/tracing.py` | `get_tracer()` factory, span helpers |
+| `src/guardrails/content_safety.py` | `ContentSafetyGuardrail.check(text)` |
+| `tests/observability/test_tracing.py` | Unit tests for span helpers |
+| `tests/guardrails/test_content_safety.py` | Unit tests for guardrail |
+
+## Span schema (both tracks)
+| Span name | Attributes |
+|---|---|
+| `rag.ask` | `track`, `question_length`, `run_id` |
+| `rag.retrieve` | `track`, `query`, `result_count` |
+| `rag.generate` | `track`, `model`, `token_count` |
 
 ## Exit Criteria
-- Both tracks have measurable quality and latency baselines.
-- At least one cost optimization and one latency optimization are implemented.
-- Evaluation evidence exists for later architecture guidance.
+- Both tracks emit OTel spans visible in Application Insights (or verified via in-process exporter in tests).
+- Content safety guardrail raises `ValueError` on blocked content.
+- All tests pass, ruff/mypy/bandit clean.
 
 ## Suggested Commit
-feat(day-7): add evaluation, performance, and cost optimization for both tracks
+feat(day-7): add OpenTelemetry tracing and Azure AI Content Safety guardrail
 
 ## LinkedIn Prompt
-Best practice #7 for Agentic RAG on Azure: optimize with evidence, not intuition. Measure chunk size, top-k, memory window, cache hit rate, and token budgets before declaring an architecture better.
+Best practice #7 for Agentic RAG on Azure: instrument before you optimize. Adding OpenTelemetry spans to both your managed and custom agent paths gives you the evidence you need to make architecture decisions with confidence — and Azure AI Content Safety keeps the guardrails where they belong: at the infrastructure layer.
