@@ -1,0 +1,127 @@
+timestamp_utc,question_index,question,track_name,run_id,citation_count,has_citation,relevance_score,warning,answer
+2026-04-19T13:17:09.365973+00:00,1,How do I deploy Azure OpenAI?,Track A (Foundry),run_9xOOfeJ0BcIoCXdyI4Epi2U0,6,True,1.0,,"Deploying Azure OpenAI involves several steps and considerations:
+
+1. **Planning and Scaling**:
+   - Begin with capacity planning based on token usage patterns. For GPT-4, start with 10 TPK (tokens per minute / 1000) for non-production environments and scale to 50+ TPK for production.
+   - Use multi-region deployment strategies, employing Azure Traffic Manager or API Management to minimize latency and optimize redundancy.
+
+2. **Cost Optimization**:
+   - Use provisioned throughput for consistent high-volume workloads.
+   - Batch requests to reduce overheads and consider smaller models for non-critical tasks like GPT-4 turbo or GPT-3.5.
+
+3. **Integration**:
+   - Link Azure OpenAI with Azure services such as AI Search (for retrieval-augmented generation) or Key Vault for secure API keys management.
+   - Set up Azure Monitor for logging and operational alerts.
+
+4. **Security Best Practices**:
+   - Implement Managed Identity to replace API keys.
+   - Utilize virtual networks and private endpoints for isolation.
+   - Apply role-based access control (RBAC) and audit API calls for compliance.
+
+5. **Monitoring**:
+   - Enable diagnostics logging for usage and errors.
+   - Use Azure Application Insights to monitor metrics and OpenTelemetry for distributed system tracing.
+
+In addition, when building applications:
+- You can use tools like Prompt Flow in Azure AI Foundry, which supports visual workflows integrated with Azure OpenAI. 
+
+Following these methods ensures efficient and secure deployment of Azure OpenAI while meeting capacity and cost requirements."
+2026-04-19T13:17:09.365973+00:00,1,How do I deploy Azure OpenAI?,Track B (LangGraph),0f2c4347-da64-40cf-9458-c5c3f3fcfe33,5,True,1.0,,"To deploy Azure OpenAI, follow these steps:
+
+1. **Capacity Planning**:
+   - Start with appropriate token-per-minute (TPK) settings based on your use case. For example, GPT-4o might start with 10 TPK for non-production and 50+ TPK for production environments.
+   - Monitor usage patterns and adjust capacity based on peak loads and cost constraints.
+
+2. **Multi-Region Deployment**:
+   - Deploy models in multiple Azure regions to ensure redundancy and optimize latency.
+   - Use Azure Traffic Manager or API Management to route requests effectively.
+
+3. **Integration with Azure Services**:
+   - Connect to Azure AI Search for Retrieval-Augmented Generation (RAG) scenarios.
+   - Use Azure Key Vault for secure storage of API keys.
+   - Enable Azure Monitor for logging and alerting.
+   - Optionally, integrate with Azure AI Foundry for prompt management and evaluation.
+
+4. **Security Best Practices**:
+   - Use Managed Identity instead of API keys for authentication.
+   - Enforce network isolation using Virtual Networks (VNets) and Private Endpoints.
+   - Enable Role-Based Access Control (RBAC) for all resources.
+   - Audit API calls and model outputs to ensure compliance.
+
+5. **Monitoring and Observability**:
+   - Enable diagnostics logging to track quota usage, latency, and errors.
+   - Set up alerts for critical metrics to ensure smooth operation.
+
+These steps will help you deploy Azure OpenAI effectively while ensuring scalability, security, and observability [1][2][3]. 
+
+Citations:
+1. [Azure AI Foundry Best Practices](data\sample_documents\azure-ai-foundry.html)
+2. [Azure OpenAI Deployment Strategy](data\sample_documents\openai-deployment.txt)
+3. [Integration with Azure Services](data\sample_documents\openai-deployment.txt)"
+2026-04-19T13:17:09.365973+00:00,2,What is LangGraph and when should I use it?,Track A (Foundry),run_loJ3JvjbaRwRI5BhvrRxcE1g,1,True,1.0,,"LangGraph is a library designed for building stateful, multi-actor applications with large language models (LLMs). It extends LangChain by introducing explicit support for cycles, parallel executions, and dynamic routing. The core concept involves representing applications as directed acyclic graphs (DAGs) or cyclic graphs, with nodes symbolizing functions such as LLM calls, tool invocations, or custom logic, and edges illustrating data flow.
+
+Key components and functionality:
+1. **State Management**: It provides shared data (state) that flows through the graph, updating dynamically at every step. This makes it suitable for tasks requiring multi-step reasoning or memory retention.
+2. **ReAct Pattern** (Reasoning + Acting): LangGraph integrates this pattern, alternating between thought processes and action (e.g., tool invocation), tracking the state at each cycle.
+3. **Applications**: Custom agents can be built for orchestrating complex workflows involving multiple tools or decision-making steps.
+
+**When to Use LangGraph**:
+- For scenarios requiring dynamic orchestration, where workflows involve multi-step reasoning by tools or agents.
+- Applications that need parallel execution or dynamic task branching for greater efficiency.
+- Complex systems requiring explicit state tracking and memory across multiple interactions.
+
+It is especially suitable for use cases involving stateful AI agents performing multiple interactions intelligently, rather than simple or linear task completions."
+2026-04-19T13:17:09.365973+00:00,2,What is LangGraph and when should I use it?,Track B (LangGraph),4d665030-f49b-47d9-aef9-6e4ecab74330,5,True,1.0,,"LangGraph is a library designed for building stateful, multi-actor applications using large language models (LLMs). It extends the capabilities of LangChain by introducing explicit support for cycles, parallel execution, and dynamic routing. The core structure of a LangGraph application is a directed acyclic graph (DAG) or cyclic graph, where:
+
+- **Nodes** represent functions, which can include LLM calls, tool invocations, or custom logic.
+- **Edges** represent the flow of data between these nodes.
+
+LangGraph also emphasizes state management, allowing shared data to flow through the graph and be updated at each node [1][5].
+
+### When to Use LangGraph
+You should consider using LangGraph in scenarios where:
+1. **Complex Multi-Agent Orchestration**: You need to coordinate multiple agents or tools in a structured workflow.
+2. **Dynamic Routing**: Your application requires decisions on-the-fly about which tools or logic to invoke based on the current state.
+3. **Parallel Execution**: Tasks need to be executed simultaneously to optimize performance.
+4. **Stateful Applications**: Maintaining and updating shared data across multiple steps is critical to your application.
+
+LangGraph is particularly useful for building advanced AI-driven workflows, such as custom agents that require reasoning, tool usage, and iterative decision-making [1][5].
+
+### Example Use Case
+A custom agent built with LangGraph might involve:
+- Defining a shared state that includes inputs, intermediate thoughts, actions, and final outputs.
+- Implementing tools that the agent can call during its workflow.
+- Constructing a graph with nodes for reasoning, tool invocation, and decision-making [5].
+
+Citations:
+1. [LangGraph for Multi-Agent Orchestration](1)
+2. [Building a Custom Agent with LangGraph](5)"
+2026-04-19T13:17:09.365973+00:00,3,How does Azure AI Search help in RAG?,Track A (Foundry),run_c7PqWCh5A5dJntgeCYnVXm7v,0,False,0.75,WARN: no citations — response may not be grounded,"Azure AI Search plays a significant role in Retrieval-Augmented Generation (RAG) by providing advanced search capabilities to retrieve relevant documents or data from a knowledge base. RAG is a framework where relevant information is first retrieved from a database using tools like Azure Search, and then that information is used to generate responses, often supplemented by generative AI models.
+
+Key ways Azure AI Search contributes to RAG include:
+
+1. **Advanced Document Indexing and Retrieval**: Azure AI Search indexes large data sets and enables efficient retrieval of relevant documents. This capability ensures that accurate and pertinent information is retrieved quickly to support high-quality generative responses.
+
+2. **Cognitive Search Capabilities**: Utilizing AI-powered features like semantic search, Azure AI Search understands context and relevance better. Semantic search ensures retrieval is not just keyword-based but comprehends the meaning behind user queries, crucial for RAG scenarios.
+
+3. **Integration Options**: Azure AI Search can seamlessly integrate with generative AI models such as OpenAI’s GPT, allowing for smooth communication between document retrieval and response generation components.
+
+4. **Customization**: It provides opportunities for users to customize search algorithms and ranking systems to align with their specific RAG application needs, whether for customer support, research, or other domains.
+
+5. **Scalability and Management**: Azure AI Search supports scalability for large datasets, ensuring the system can handle extensive requests effectively.
+
+These features underline Azure AI Search as a powerful tool in implementing the RAG framework by bridging the gap between retrieving information and generating human-like, informed responses.
+
+Sources:
+I could not find specific references in the knowledge base directly related to your query. Let me know if further clarification is needed."
+2026-04-19T13:17:09.365973+00:00,3,How does Azure AI Search help in RAG?,Track B (LangGraph),78c82c8e-50c5-41ee-9f8c-7703ad7b388a,4,True,0.75,,"Azure AI Search plays a significant role in Retrieval-Augmented Generation (RAG) scenarios by providing a robust search capability that can retrieve relevant information from a knowledge base. This retrieved information can then be used to augment the responses generated by large language models (LLMs). Specifically, Azure AI Search can:
+
+1. **Connect to RAG Scenarios**: Azure AI Search integrates seamlessly with other Azure services, including Azure OpenAI, to support RAG workflows. It enables the retrieval of contextually relevant data, which can be used to enhance the accuracy and relevance of LLM-generated outputs [1][2].
+
+2. **Integration with Azure AI Foundry**: Azure AI Foundry, a platform for building enterprise-grade AI applications, supports the integration of Azure AI Search for managing and retrieving data efficiently. This integration is particularly useful for prompt management and evaluation in RAG applications [1][2].
+
+By leveraging Azure AI Search, organizations can enhance the performance of their AI systems in RAG scenarios, ensuring that the generated responses are both accurate and contextually appropriate.
+
+Citations:
+1. [Azure AI Foundry Best Practices](data\sample_documents\azure-ai-foundry.html)
+2. [Integration with Azure Services](data\sample_documents\openai-deployment.txt)"
