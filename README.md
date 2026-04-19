@@ -13,7 +13,8 @@ Production-grade Agentic RAG portfolio project covering both Azure AI Foundry en
 | Day 5 | ✅ Complete | Track B: `LangGraphRagAgent` (ReAct loop), Azure AI Search tool, citation enforcement, `compare_tracks.py` side-by-side runner with JSON/CSV export |
 | Day 6 | ✅ Complete | `evaluation_gate.py` CI gate: per-track citation rate + relevance thresholds enforced in CI; 70 tests passing |
 | Day 7 | ✅ Complete | `observability/tracing.py` (OTel spans on both tracks, App Insights exporter); `guardrails/content_safety.py` (Azure AI Content Safety pre-check); 86 tests passing |
-| Day 8+ | 🔜 Pending | See `EXECUTION_PLAN.md` and `docs/DAY_8.md` |
+| Day 8 | ✅ Complete | `multi_agent` planner pattern (plan → retrieve loop → summarise → cite), `PlannerAgent`, 13 tests, and `docs/MULTI_AGENT_PATTERNS.md`; 99 tests passing |
+| Day 9+ | 🔜 Pending | See `EXECUTION_PLAN.md` and `docs/DAY_9.md` |
 
 ## Architecture
 
@@ -60,12 +61,13 @@ src/
   cost_model/      # Token and cost tracking utilities
   foundry/         # FoundryRagAgent (Track A), FoundryResponse, evaluate_response
   langgraph_agent/ # LangGraphRagAgent (Track B), ReAct graph, search_tool
+  multi_agent/     # PlannerAgent (Track B extension), planner + specialist nodes
   observability/   # OTel tracer factory (configure_tracing, get_tracer)
   compare_tracks.py     # Side-by-side runner for Track A vs Track B (JSON/CSV output)
   evaluation_gate.py    # CI quality gate — citation rate + relevance thresholds
 infra/             # Bicep modules for all Azure services
 docs/              # Day guides (DAY_1.md … DAY_10.md), ADRs, reference docs
-tests/             # Unit tests (pytest, 70 passing)
+tests/             # Unit tests (pytest, 99 passing)
 data/
   sample_documents/     # HTML, TXT corpus for ingestion tests
   track_compare.json    # Latest Track A vs B comparison output
@@ -79,6 +81,7 @@ data/
 - `docs/ARCHITECTURE_DECISIONS.md` — all ADRs
 - `docs/INGESTION_OPTIONS_REFERENCE.md` — parse/chunk/embed/index options with trade-offs
 - `docs/WHY_EXPLICIT_INGESTION_PIPELINE.md` — why explicit pipeline over Azure Integrated Vectorization
+- `docs/MULTI_AGENT_PATTERNS.md` — single-agent vs multi-agent pattern catalog for Azure
 
 ## Delivery tracks
 - Track A: Azure AI Foundry end-to-end Agentic RAG

@@ -35,6 +35,15 @@ Goal: Build a planner agent that routes sub-tasks to specialist agents and compa
 - Single-agent vs multi-agent comparison evidence committed.
 - All tests pass, ruff/mypy/bandit clean.
 
+## Shipped
+- Added `src/multi_agent/state.py` with `PlannerState` to model planner and specialist handoff.
+- Added `src/multi_agent/specialists.py` with retrieval, summarisation, and citation specialist node factories.
+- Added `src/multi_agent/planner.py` with planner node, retrieval router, `build_planner_graph()`, and `PlannerAgent` facade.
+- Added `src/multi_agent/__init__.py` exports for package-level imports.
+- Added `tests/multi_agent/test_planner.py` with 13 unit tests covering planner decomposition, retrieval accumulation, router transitions, and `PlannerAgent.ask()` flow.
+- Added `docs/MULTI_AGENT_PATTERNS.md` documenting available patterns: Single ReAct, Planner+Specialists, Supervisor/Router, Sequential Pipeline, Parallel Fan-Out, Critic/Verifier, and Hierarchical.
+- Quality gate result for this increment: `ruff` clean, `mypy` clean, `pytest` 99 passed, `bandit` clean.
+
 ## Suggested Commit
 feat(day-8): add multi-agent planner pattern with specialist routing
 

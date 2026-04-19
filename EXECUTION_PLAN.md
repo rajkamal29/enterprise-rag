@@ -39,8 +39,8 @@ Target audience: Solution Architect / Azure Cloud Architect / AI Architect
 4. Day 4: Azure AI Foundry end-to-end RAG + agent workflow — project connections, agent flow, evaluation hooks. ✅
 5. Day 5: Azure-based custom agent workflow — LangGraph ReAct loop, tool-calling, citations, side-by-side track comparison. ✅
 6. Day 6: Evaluation gate and quality thresholds — citation rate and relevance gate in CI, threshold-driven failure. ✅
-7. Day 7: OpenTelemetry tracing + Azure AI Content Safety — structured spans on both tracks, input safety guardrail.
-8. Day 8: Multi-agent planner pattern — planner agent routing to specialist agents, state handoff, tradeoff documentation.
+7. Day 7: OpenTelemetry tracing + Azure AI Content Safety — structured spans on both tracks, input safety guardrail. ✅
+8. Day 8: Multi-agent planner pattern — planner agent routing to specialist agents, state handoff, tradeoff documentation. ✅
 9. Day 9: Azure Container Apps + Azure API Management deployment — containerize custom runtime, APIM gateway, managed identity at runtime.
 10. Day 10: Full architecture refresh — when to use what, tradeoffs, performance, memory, cost, security, orchestration, and agent-pattern guidance.
 
