@@ -11,7 +11,7 @@ Current date: 2026-04-19
 - [x] Day 6 - Evaluation Gate and Quality Thresholds
 - [x] Day 7 - OpenTelemetry Tracing + Azure AI Content Safety
 - [x] Day 8 - Multi-Agent Planner Pattern
-- [ ] Day 9 - Azure Container Apps + APIM Deployment
+- [x] Day 9 - Azure Container Apps + APIM Deployment
 - [ ] Day 10 - Architecture Refresh + Tradeoff Compendium
 
 ## Daily Time Box (6 Hours)

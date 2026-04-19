@@ -1,0 +1,44 @@
+name: Post-Deploy Smoke Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run APIM health and ask smoke tests
+        env:
+          APIM_BASE_URL: ${{ secrets.APIM_BASE_URL }}
+          APIM_SUBSCRIPTION_KEY: ${{ secrets.APIM_SUBSCRIPTION_KEY }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${APIM_BASE_URL:-}" ] || [ -z "${APIM_SUBSCRIPTION_KEY:-}" ]; then
+            echo "Missing required secrets: APIM_BASE_URL and/or APIM_SUBSCRIPTION_KEY"
+            exit 1
+          fi
+
+          HEALTH_CODE=$(curl -sS -o /tmp/health.json -w "%{http_code}" \
+            -H "Ocp-Apim-Subscription-Key: ${APIM_SUBSCRIPTION_KEY}" \
+            "${APIM_BASE_URL}/rag/health")
+          test "${HEALTH_CODE}" = "200"
+          grep -q '"status"' /tmp/health.json
+
+          ASK_CODE=$(curl -sS -o /tmp/ask.json -w "%{http_code}" \
+            -H "Ocp-Apim-Subscription-Key: ${APIM_SUBSCRIPTION_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{"question":"How do I deploy Azure OpenAI?"}' \
+            "${APIM_BASE_URL}/rag/ask")
+          test "${ASK_CODE}" = "200"
+
+          python - <<'PY'
+import json
+from pathlib import Path
+
+payload = json.loads(Path('/tmp/ask.json').read_text(encoding='utf-8'))
+assert isinstance(payload.get('answer'), str) and payload['answer'].strip(), 'Missing answer'
+assert isinstance(payload.get('citations'), list), 'Missing citations list'
+assert isinstance(payload.get('run_id'), str) and payload['run_id'].strip(), 'Missing run_id'
+print('Smoke test passed:', {'citations_count': len(payload['citations']), 'run_id': payload['run_id']})
+PY

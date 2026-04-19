@@ -195,7 +195,7 @@ resource apimApi 'Microsoft.ApiManagement/service/apis@2023-05-01-preview' = {
   properties: {
     displayName: 'Enterprise RAG API'
     path: 'rag'
-    subscriptionRequired: false
+    subscriptionRequired: true
     protocols: [
       'https'
     ]

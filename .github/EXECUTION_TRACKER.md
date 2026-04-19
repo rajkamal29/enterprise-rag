@@ -3,8 +3,8 @@
 Last updated: 2026-04-19
 
 ## Overall Progress
-- Days completed: 8/10
-- Hours invested: 48/60
+- Days completed: 9/10
+- Hours invested: 54/60
 - CI status: Passing
 
 ## Daily Log
@@ -18,7 +18,7 @@ Last updated: 2026-04-19
 | 6 | Complete | 6 | ✅ | `evaluation_gate.py` CI gate: citation rate + relevance thresholds; 70 tests passing |
 | 7 | Complete | 6 | ✅ | `observability/tracing.py` (OTel factory + App Insights), `guardrails/content_safety.py` (ContentSafetyGuardrail); both agents instrumented; 86 tests passing |
 | 8 | Complete | 6 | ✅ | `multi_agent` package: `PlannerState`, planner + specialist nodes, conditional graph router, `PlannerAgent`, 13 unit tests, multi-agent patterns reference (`docs/MULTI_AGENT_PATTERNS.md`); 99 tests passing |
-| 9 | Not started | 0 | N/A | Azure Container Apps + Azure API Management deployment path |
+| 9 | Complete | 6 | ✅ | FastAPI runtime deployed on ACA behind APIM; ACR image build/push fixed; APIM `/rag/health` and `/rag/ask` smoke-tested successfully |
 | 10 | Not started | 0 | N/A | Full topic refresh, comparison matrices, when-to-use-what guidance |
 
 ## Risks
