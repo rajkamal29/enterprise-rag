@@ -159,8 +159,10 @@ class FoundryRagAgent:
         """
         if not settings.foundry_is_configured:
             raise RuntimeError(
-                "AZURE_AI_FOUNDRY_PROJECT_CONNECTION_STRING is not set. "
-                "Run infra/deploy.ps1 and source the .env file."
+                "Neither AZURE_AI_FOUNDRY_ENDPOINT nor "
+                "AZURE_AI_FOUNDRY_PROJECT_CONNECTION_STRING is set. "
+                "Copy the Project endpoint from AI Foundry portal → "
+                "project Overview and set AZURE_AI_FOUNDRY_ENDPOINT in .env."
             )
         if not settings.azure_ai_search_connection_id:
             raise RuntimeError(
@@ -170,14 +172,25 @@ class FoundryRagAgent:
                 "in your .env file."
             )
 
-        conn_parts = settings.azure_ai_foundry_project_connection_string.split(";")
-        if len(conn_parts) != 4:
-            raise ValueError(
-                "AZURE_AI_FOUNDRY_PROJECT_CONNECTION_STRING has invalid format. "
-                "Expected '<region>.api.azureml.ms;<subscription>;<rg>;<project>'."
+        # Prefer the explicit endpoint URL if provided; otherwise derive from
+        # the connection string (legacy Azure ML format).
+        if settings.azure_ai_foundry_endpoint:
+            endpoint = settings.azure_ai_foundry_endpoint.rstrip("/")
+        else:
+            conn_parts = settings.azure_ai_foundry_project_connection_string.split(";")
+            if len(conn_parts) != 4:
+                raise ValueError(
+                    "AZURE_AI_FOUNDRY_PROJECT_CONNECTION_STRING has invalid format. "
+                    "Expected '<region>.api.azureml.ms;<subscription>;<rg>;<project>'."
+                )
+            host, _, _, project_name = conn_parts
+            endpoint = f"https://{host}/api/projects/{project_name}"
+            logger.warning(
+                "AZURE_AI_FOUNDRY_ENDPOINT not set; derived endpoint: %s. "
+                "If you get 404 errors, set AZURE_AI_FOUNDRY_ENDPOINT explicitly "
+                "from AI Foundry portal → project Overview.",
+                endpoint,
             )
-        host, _, _, project_name = conn_parts
-        endpoint = f"https://{host}/api/projects/{project_name}"
 
         agents_client = AgentsClient(endpoint=endpoint, credential=credential)
         return cls(

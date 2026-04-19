@@ -74,6 +74,7 @@ class TestFoundryRagAgentFromSettings:
         from config.settings import AzureSettings
 
         settings = AzureSettings(
+            azure_ai_foundry_endpoint="",
             azure_ai_foundry_project_connection_string="",
             azure_ai_search_connection_id="conn",
         )
@@ -98,6 +99,7 @@ class TestFoundryRagAgentFromSettings:
         from config.settings import AzureSettings
 
         settings = AzureSettings(
+            azure_ai_foundry_endpoint="",
             azure_ai_foundry_project_connection_string="only-two;parts",
             azure_ai_search_connection_id="conn",
         )
@@ -109,6 +111,7 @@ class TestFoundryRagAgentFromSettings:
         from config.settings import AzureSettings
 
         settings = AzureSettings(
+            azure_ai_foundry_endpoint="",
             azure_ai_foundry_project_connection_string=(
                 "eastus.api.azureml.ms;sub-123;rg-dev;proj-erag2-dev"
             ),

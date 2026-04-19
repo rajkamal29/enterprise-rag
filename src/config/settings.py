@@ -49,6 +49,12 @@ class AzureSettings(BaseSettings):
     # Format: <region>.api.azureml.ms;<subscription>;<resource_group>;<project>
     azure_ai_foundry_project_connection_string: str = ""
 
+    # Direct project endpoint URL — copy from AI Foundry portal:
+    # ai.azure.com → <your project> → Overview → "Project endpoint"
+    # Format: https://<hub-name>.services.ai.azure.com/api/projects/<project>
+    # Takes precedence over azure_ai_foundry_project_connection_string.
+    azure_ai_foundry_endpoint: str = ""
+
     # Azure AI Foundry connection name for the AI Search service.
     # Set in the AI Foundry portal under Project Settings → Connections,
     # then reference the connection name here.
@@ -84,7 +90,10 @@ class AzureSettings(BaseSettings):
 
     @property
     def foundry_is_configured(self) -> bool:
-        return bool(self.azure_ai_foundry_project_connection_string)
+        return bool(
+            self.azure_ai_foundry_endpoint
+            or self.azure_ai_foundry_project_connection_string
+        )
 
     @property
     def foundry_search_is_configured(self) -> bool:
