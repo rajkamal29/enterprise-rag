@@ -1,28 +1,30 @@
-# Day 6 - Memory, Tools, and Retrieval Optimization Across Both Tracks
+# Day 6 - Evaluation Gate and Quality Thresholds
 
-Goal: Add memory and tool patterns that work across both implementations, then optimize retrieval quality.
+Goal: enforce minimum response quality in CI using comparison outputs from Track A vs Track B.
 
 ## Outcomes
-- Short-term and long-term memory strategy defined for both tracks.
-- Shared tool taxonomy for search, date, calculator, and HTTP tasks.
-- Hybrid retrieval benchmark across managed and custom flows.
-- Retrieval quality improvements documented with reusable metrics.
+- Added a gate script: `src/evaluation_gate.py`.
+- Added automated checks in CI against `data/track_compare.json`.
+- Defined minimum thresholds for citation rate and relevance.
 
-## 6-Hour Plan
-1. Define short-term and long-term memory responsibilities.
-2. Add or map tool patterns into both AI Foundry and LangGraph workflows.
-3. Implement Azure AI Search hybrid retrieval benchmark.
-4. Add caching and memory-size boundaries for performance and cost control.
-5. Document how memory differs between managed and custom orchestration.
-6. Capture early when-to-use-what guidance for tools and memory.
+## Commands
+1. Generate comparison output:
+	`uv run python src/compare_tracks.py --json-out data/track_compare.json --csv-out data/track_compare.csv`
+2. Run gate locally:
+	`uv run python src/evaluation_gate.py --input data/track_compare.json`
+
+## Default Thresholds
+- `min_records`: 3 records per track
+- `min_citation_rate`: 0.60 per track
+- `min_avg_relevance`: 0.70 per track
 
 ## Exit Criteria
-- Memory approach is documented for both tracks.
-- Hybrid retrieval is benchmarked and chosen intentionally.
-- Tool and memory tradeoffs are recorded for Day 10 refresh.
+- CI fails when any track drops below thresholds.
+- Gate output clearly shows per-track stats and failing checks.
+- Team can tune thresholds without code changes via CLI flags.
 
 ## Suggested Commit
-feat(day-6): add memory, tools, and retrieval optimization across both tracks
+feat(day-6): add evaluation gate and CI threshold checks
 
 ## LinkedIn Prompt
-Best practice #6 for Agentic RAG on Azure: memory is not one thing. Keep a strict boundary between session memory, persistent memory, and retrieval context or your cost, latency, and correctness all drift upward.
+Best practice #6 for Agentic RAG on Azure: treat evaluation as a release gate, not a dashboard. If citation and relevance thresholds are not met, the build should fail.

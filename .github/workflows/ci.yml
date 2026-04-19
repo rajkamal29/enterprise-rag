@@ -23,3 +23,5 @@ jobs:
         run: mypy src
       - name: Pytest
         run: pytest
+      - name: Evaluation Gate
+        run: python src/evaluation_gate.py --input data/track_compare.json
