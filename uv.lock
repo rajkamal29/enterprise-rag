@@ -485,6 +485,7 @@ name = "enterprise-rag"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "azure-ai-agents" },
     { name = "azure-ai-documentintelligence" },
     { name = "azure-ai-projects" },
     { name = "azure-identity" },
@@ -508,6 +509,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "azure-ai-agents", specifier = ">=1.1,<2.0" },
     { name = "azure-ai-documentintelligence", specifier = ">=1.0,<2.0" },
     { name = "azure-ai-projects", specifier = ">=1.0,<2.0" },
     { name = "azure-identity", specifier = ">=1.16,<2.0" },

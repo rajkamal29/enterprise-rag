@@ -49,6 +49,12 @@ class AzureSettings(BaseSettings):
     # Format: <region>.api.azureml.ms;<subscription>;<resource_group>;<project>
     azure_ai_foundry_project_connection_string: str = ""
 
+    # Azure AI Foundry connection name for the AI Search service.
+    # Set in the AI Foundry portal under Project Settings → Connections,
+    # then reference the connection name here.
+    # Used by AzureAISearchTool as index_connection_id.
+    azure_ai_search_connection_id: str = ""
+
     # ── Managed Identity ──────────────────────────────────────────────────────
     # When running on Azure (ACA, VM, etc.) the SDK picks this up automatically
     # from IMDS.  For local dev, set AZURE_CLIENT_ID to the user-assigned MI
@@ -79,6 +85,11 @@ class AzureSettings(BaseSettings):
     @property
     def foundry_is_configured(self) -> bool:
         return bool(self.azure_ai_foundry_project_connection_string)
+
+    @property
+    def foundry_search_is_configured(self) -> bool:
+        """True when both Foundry and the AI Search connection ID are set."""
+        return self.foundry_is_configured and bool(self.azure_ai_search_connection_id)
 
     @property
     def documentintelligence_is_configured(self) -> bool:
