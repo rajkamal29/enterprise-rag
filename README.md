@@ -12,7 +12,8 @@ Production-grade Agentic RAG portfolio project covering both Azure AI Foundry en
 | Day 4 | ✅ Complete | Track A: `FoundryRagAgent` (Azure AI Foundry agent SDK), grounded responses with citations, `evaluate_response` with relevance scoring |
 | Day 5 | ✅ Complete | Track B: `LangGraphRagAgent` (ReAct loop), Azure AI Search tool, citation enforcement, `compare_tracks.py` side-by-side runner with JSON/CSV export |
 | Day 6 | ✅ Complete | `evaluation_gate.py` CI gate: per-track citation rate + relevance thresholds enforced in CI; 70 tests passing |
-| Day 7+ | 🔜 Pending | See `EXECUTION_PLAN.md` and `docs/DAY_7.md` |
+| Day 7 | ✅ Complete | `observability/tracing.py` (OTel spans on both tracks, App Insights exporter); `guardrails/content_safety.py` (Azure AI Content Safety pre-check); 86 tests passing |
+| Day 8+ | 🔜 Pending | See `EXECUTION_PLAN.md` and `docs/DAY_8.md` |
 
 ## Architecture
 
@@ -59,6 +60,7 @@ src/
   cost_model/      # Token and cost tracking utilities
   foundry/         # FoundryRagAgent (Track A), FoundryResponse, evaluate_response
   langgraph_agent/ # LangGraphRagAgent (Track B), ReAct graph, search_tool
+  observability/   # OTel tracer factory (configure_tracing, get_tracer)
   compare_tracks.py     # Side-by-side runner for Track A vs Track B (JSON/CSV output)
   evaluation_gate.py    # CI quality gate — citation rate + relevance thresholds
 infra/             # Bicep modules for all Azure services

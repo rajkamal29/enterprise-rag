@@ -18,6 +18,10 @@ dependencies = [
   "langgraph>=0.2,<1.0",
   "langchain-openai>=0.1,<1.0",
   "langchain-core>=0.2,<1.0",
+  "opentelemetry-api>=1.25,<2.0",
+  "opentelemetry-sdk>=1.25,<2.0",
+  "azure-monitor-opentelemetry-exporter>=1.0.0b1,<2.0",
+  "azure-ai-contentsafety>=1.0,<2.0",
 ]
 
 [project.optional-dependencies]
@@ -51,4 +55,4 @@ select = ["E", "F", "I", "B"]
 [tool.mypy]
 python_version = "3.11"
 strict = true
-packages = ["guardrails", "config", "azure_clients", "cost_model", "foundry"]
+packages = ["guardrails", "config", "azure_clients", "cost_model", "foundry", "observability"]

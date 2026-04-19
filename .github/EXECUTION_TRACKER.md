@@ -3,8 +3,8 @@
 Last updated: 2026-04-19
 
 ## Overall Progress
-- Days completed: 6/10
-- Hours invested: 36/60
+- Days completed: 7/10
+- Hours invested: 42/60
 - CI status: Passing
 
 ## Daily Log
@@ -16,7 +16,7 @@ Last updated: 2026-04-19
 | 4 | Complete | 6 | ✅ | Track A: `FoundryRagAgent` with citations, `evaluate_response`, `FoundryResponse` dataclass |
 | 5 | Complete | 6 | ✅ | Track B: `LangGraphRagAgent` (ReAct graph), `search_tool`, `compare_tracks.py` (JSON/CSV export) |
 | 6 | Complete | 6 | ✅ | `evaluation_gate.py` CI gate: citation rate + relevance thresholds; 70 tests passing |
-| 7 | Not started | 0 | N/A | OpenTelemetry tracing + Azure AI Content Safety guardrail |
+| 7 | Complete | 6 | ✅ | `observability/tracing.py` (OTel factory + App Insights), `guardrails/content_safety.py` (ContentSafetyGuardrail); both agents instrumented; 86 tests passing |
 | 8 | Not started | 0 | N/A | Multi-agent planner pattern (planner → specialist agents) |
 | 9 | Not started | 0 | N/A | Azure Container Apps + Azure API Management deployment path |
 | 10 | Not started | 0 | N/A | Full topic refresh, comparison matrices, when-to-use-what guidance |

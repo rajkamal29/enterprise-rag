@@ -52,8 +52,10 @@ from azure.ai.agents.models import (
 from azure.core.credentials import TokenCredential
 
 from config.settings import AzureSettings
+from observability.tracing import get_tracer
 
 logger = logging.getLogger(__name__)
+_tracer = get_tracer("foundry.rag_agent")
 
 # System prompt: instruct the agent to ground answers in retrieved content
 # and always cite its sources.
@@ -215,40 +217,50 @@ class FoundryRagAgent:
         Returns:
             ``AgentResponse`` with content, citations, run_id, and thread_id.
         """
-        self._ensure_agent()
-        self._ensure_thread()
-        if self._agent_id is None:
-            raise RuntimeError("Agent could not be created.")
-        if self._thread_id is None:
-            raise RuntimeError("Thread could not be created.")
+        with _tracer.start_as_current_span("rag.ask") as span:
+            span.set_attribute("rag.track", "foundry")
+            span.set_attribute("rag.question_length", len(question))
 
-        logger.info("Sending question to agent [thread=%s]: %s", self._thread_id, question)
+            self._ensure_agent()
+            self._ensure_thread()
+            if self._agent_id is None:
+                raise RuntimeError("Agent could not be created.")
+            if self._thread_id is None:
+                raise RuntimeError("Thread could not be created.")
 
-        # Add the user message to the thread.
-        self._client.messages.create(
-            thread_id=self._thread_id,
-            role=MessageRole.USER,
-            content=question,
-        )
+            logger.info("Sending question to agent [thread=%s]: %s", self._thread_id, question)
 
-        # Create a run and wait for it to complete.
-        run = self._client.runs.create_and_process(
-            thread_id=self._thread_id,
-            agent_id=self._agent_id,
-        )
-
-        logger.info(
-            "Run completed [run_id=%s, status=%s]", run.id, run.status
-        )
-
-        if run.status != RunStatus.COMPLETED:
-            error_msg = getattr(run, "last_error", None)
-            raise RuntimeError(
-                f"Agent run did not complete successfully. "
-                f"Status: {run.status}. Error: {error_msg}"
+            # Add the user message to the thread.
+            self._client.messages.create(
+                thread_id=self._thread_id,
+                role=MessageRole.USER,
+                content=question,
             )
 
-        return self._extract_response(run.id, self._thread_id)
+            with _tracer.start_as_current_span("rag.generate") as gen_span:
+                gen_span.set_attribute("rag.track", "foundry")
+                gen_span.set_attribute("rag.model", self._model)
+                # Create a run and wait for it to complete.
+                run = self._client.runs.create_and_process(
+                    thread_id=self._thread_id,
+                    agent_id=self._agent_id,
+                )
+
+            logger.info(
+                "Run completed [run_id=%s, status=%s]", run.id, run.status
+            )
+
+            if run.status != RunStatus.COMPLETED:
+                error_msg = getattr(run, "last_error", None)
+                raise RuntimeError(
+                    f"Agent run did not complete successfully. "
+                    f"Status: {run.status}. Error: {error_msg}"
+                )
+
+            response = self._extract_response(run.id, self._thread_id)
+            span.set_attribute("rag.run_id", response.run_id)
+            span.set_attribute("rag.citation_count", len(response.citations))
+            return response
 
     def reset_conversation(self) -> None:
         """Discard the current thread and start a new conversation.

@@ -16,8 +16,10 @@ from config.settings import AzureSettings
 from foundry.rag_agent import AgentResponse, Citation
 from langgraph_agent.react_agent import build_graph
 from langgraph_agent.search_tool import init_search_tool
+from observability.tracing import get_tracer
 
 logger = logging.getLogger(__name__)
+_tracer = get_tracer("langgraph_agent.agent")
 
 _OPENAI_SCOPE = "https://cognitiveservices.azure.com/.default"
 
@@ -79,33 +81,43 @@ class LangGraphRagAgent:
         Returns:
             AgentResponse with content, citations, and a request_id trace ID.
         """
-        request_id = str(uuid.uuid4())
-        initial_state = {
-            "messages": [HumanMessage(content=question)],
-            "citations": [],
-            "request_id": request_id,
-            "tool_call_ids": [],
-        }
+        with _tracer.start_as_current_span("rag.ask") as span:
+            span.set_attribute("rag.track", "langgraph")
+            span.set_attribute("rag.question_length", len(question))
 
-        result = self._graph.invoke(initial_state)
+            request_id = str(uuid.uuid4())
+            initial_state = {
+                "messages": [HumanMessage(content=question)],
+                "citations": [],
+                "request_id": request_id,
+                "tool_call_ids": [],
+            }
 
-        last_message = result["messages"][-1]
-        content: str = getattr(last_message, "content", "") or ""
+            with _tracer.start_as_current_span("rag.generate") as gen_span:
+                gen_span.set_attribute("rag.track", "langgraph")
+                gen_span.set_attribute("rag.model", self._model)
+                result = self._graph.invoke(initial_state)
 
-        citations = [
-            Citation(text=c, source=c) for c in result.get("citations", [])
-        ]
+            last_message = result["messages"][-1]
+            content: str = getattr(last_message, "content", "") or ""
 
-        logger.info(
-            "LangGraph run complete [request_id=%s, citations=%d]",
-            request_id,
-            len(citations),
-        )
+            citations = [
+                Citation(text=c, source=c) for c in result.get("citations", [])
+            ]
 
-        return AgentResponse(
-            content=content,
-            citations=citations,
-            run_id=request_id,
-            thread_id="",
-            raw_text=content,
-        )
+            logger.info(
+                "LangGraph run complete [request_id=%s, citations=%d]",
+                request_id,
+                len(citations),
+            )
+
+            span.set_attribute("rag.run_id", request_id)
+            span.set_attribute("rag.citation_count", len(citations))
+
+            return AgentResponse(
+                content=content,
+                citations=citations,
+                run_id=request_id,
+                thread_id="",
+                raw_text=content,
+            )

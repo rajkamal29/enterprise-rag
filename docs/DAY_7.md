@@ -47,3 +47,14 @@ feat(day-7): add OpenTelemetry tracing and Azure AI Content Safety guardrail
 
 ## LinkedIn Prompt
 Best practice #7 for Agentic RAG on Azure: instrument before you optimize. Adding OpenTelemetry spans to both your managed and custom agent paths gives you the evidence you need to make architecture decisions with confidence — and Azure AI Content Safety keeps the guardrails where they belong: at the infrastructure layer.
+
+## Shipped (Day 7 — 2026-04-19)
+- `src/observability/__init__.py` — package marker
+- `src/observability/tracing.py` — `configure_tracing()` factory, `get_tracer()`, `reset_for_testing()`; App Insights exporter when `APPLICATIONINSIGHTS_CONNECTION_STRING` set, console fallback otherwise
+- `src/guardrails/content_safety.py` — `ContentSafetyGuardrail` + `ContentSafetyError`; no-op when endpoint not configured; `from_env()` factory
+- `src/guardrails/__init__.py` — exposes `ContentSafetyGuardrail`, `ContentSafetyError`
+- `src/foundry/rag_agent.py` — `ask()` instrumented with `rag.ask` and `rag.generate` spans
+- `src/langgraph_agent/agent.py` — `ask()` instrumented with `rag.ask` and `rag.generate` spans
+- `tests/observability/test_tracing.py` — 6 tests (provider creation, idempotence, span capture, nesting)
+- `tests/guardrails/test_content_safety.py` — 10 tests (no-op, env vars, fake client injection, severity threshold)
+- Commit: `feat(day-7)` — CI green, 86 tests passing
