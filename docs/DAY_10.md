@@ -68,6 +68,28 @@ Wrapped up a dual-track Agentic RAG build on Azure: one path using Azure AI Foun
 3. Use a hybrid pattern for transition phases instead of a hard cut-over.
 4. Keep shared ingestion, safety, and evaluation standards across both tracks to preserve comparability.
 
+### NFR targets (production baseline)
+| Dimension | Target | Notes |
+|---|---|---|
+| Availability | 99.9% monthly | Requires tested rollback and incident runbook |
+| Health latency | p95 <= 300 ms | Measured at APIM edge |
+| Ask latency | p95 <= 12 s | Workload-specific; tune top-k, model, and prompts |
+| Error budget | <= 0.1% 5xx rate | Enforced through alerts and release gates |
+| Recovery time (RTO) | <= 4 hours | Includes infra + identity recovery |
+| Data loss (RPO) | <= 15 minutes | Requires backup/restore and index refresh strategy |
+| Security | Zero hardcoded secrets | Managed identity and Key Vault only |
+
+### DR and deployment options
+| Option | Strengths | Tradeoffs | Recommended use |
+|---|---|---|---|
+| Single-region with runbook failover | Lowest cost and simplest ops | Higher regional outage risk | Early production with moderate criticality |
+| Active-passive dual region | Better resilience and controlled failover | Higher cost and operational complexity | Enterprise workloads with stricter uptime |
+| Active-active dual region | Highest availability and traffic resilience | Most complex data consistency and routing model | Mission-critical, high-scale workloads |
+
+Decision for current project phase:
+1. Baseline on single-region with hardened runbooks and smoke checks.
+2. Move to active-passive once uptime target or compliance requirements exceed single-region tolerance.
+
 ### Interview/architect talking points
 1. Why dual track: delivery speed and enterprise control optimize different constraints.
 2. Why Day 9 deployment matters: custom runtime viability is proven only after identity, APIM, and smoke tests pass.

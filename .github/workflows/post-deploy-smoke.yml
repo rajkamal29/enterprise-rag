@@ -2,6 +2,13 @@ name: Post-Deploy Smoke Test
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'infra/aca.bicep'
+      - '.github/workflows/post-deploy-smoke.yml'
 
 jobs:
   smoke:
@@ -11,6 +18,8 @@ jobs:
         env:
           APIM_BASE_URL: ${{ secrets.APIM_BASE_URL }}
           APIM_SUBSCRIPTION_KEY: ${{ secrets.APIM_SUBSCRIPTION_KEY }}
+          HEALTH_LATENCY_BUDGET_SECONDS: '3.0'
+          ASK_LATENCY_BUDGET_SECONDS: '12.0'
         run: |
           set -euo pipefail
 
@@ -25,6 +34,10 @@ jobs:
           test "${HEALTH_CODE}" = "200"
           grep -q '"status"' /tmp/health.json
 
+          HEALTH_LATENCY=$(curl -sS -o /dev/null -w "%{time_total}" \
+            -H "Ocp-Apim-Subscription-Key: ${APIM_SUBSCRIPTION_KEY}" \
+            "${APIM_BASE_URL}/rag/health")
+
           ASK_CODE=$(curl -sS -o /tmp/ask.json -w "%{http_code}" \
             -H "Ocp-Apim-Subscription-Key: ${APIM_SUBSCRIPTION_KEY}" \
             -H "Content-Type: application/json" \
@@ -32,13 +45,37 @@ jobs:
             "${APIM_BASE_URL}/rag/ask")
           test "${ASK_CODE}" = "200"
 
+          ASK_LATENCY=$(curl -sS -o /dev/null -w "%{time_total}" \
+            -H "Ocp-Apim-Subscription-Key: ${APIM_SUBSCRIPTION_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{"question":"How do I deploy Azure OpenAI?"}' \
+            "${APIM_BASE_URL}/rag/ask")
+
+          export HEALTH_LATENCY
+          export ASK_LATENCY
+
           python - <<'PY'
 import json
+import os
 from pathlib import Path
 
 payload = json.loads(Path('/tmp/ask.json').read_text(encoding='utf-8'))
 assert isinstance(payload.get('answer'), str) and payload['answer'].strip(), 'Missing answer'
 assert isinstance(payload.get('citations'), list), 'Missing citations list'
 assert isinstance(payload.get('run_id'), str) and payload['run_id'].strip(), 'Missing run_id'
-print('Smoke test passed:', {'citations_count': len(payload['citations']), 'run_id': payload['run_id']})
+
+health_latency = float(os.environ['HEALTH_LATENCY'])
+ask_latency = float(os.environ['ASK_LATENCY'])
+health_budget = float(os.environ['HEALTH_LATENCY_BUDGET_SECONDS'])
+ask_budget = float(os.environ['ASK_LATENCY_BUDGET_SECONDS'])
+
+assert health_latency <= health_budget, f'Health latency {health_latency:.3f}s exceeded budget {health_budget:.3f}s'
+assert ask_latency <= ask_budget, f'Ask latency {ask_latency:.3f}s exceeded budget {ask_budget:.3f}s'
+
+print('Smoke test passed:', {
+    'citations_count': len(payload['citations']),
+    'run_id': payload['run_id'],
+    'health_latency_s': round(health_latency, 3),
+    'ask_latency_s': round(ask_latency, 3),
+})
 PY

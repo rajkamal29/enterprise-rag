@@ -125,6 +125,41 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             cpu: json('0.5')
             memory: '1.0Gi'
           }
+          probes: [
+            {
+              type: 'Startup'
+              httpGet: {
+                path: '/health'
+                port: 8000
+              }
+              initialDelaySeconds: 5
+              periodSeconds: 5
+              timeoutSeconds: 3
+              failureThreshold: 24
+            }
+            {
+              type: 'Liveness'
+              httpGet: {
+                path: '/health'
+                port: 8000
+              }
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              timeoutSeconds: 3
+              failureThreshold: 3
+            }
+            {
+              type: 'Readiness'
+              httpGet: {
+                path: '/health'
+                port: 8000
+              }
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              timeoutSeconds: 3
+              failureThreshold: 3
+            }
+          ]
           env: [
             {
               name: 'AZURE_CLIENT_ID'
@@ -156,6 +191,16 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
       scale: {
         minReplicas: 1
         maxReplicas: 3
+        rules: [
+          {
+            name: 'http-concurrency'
+            http: {
+              metadata: {
+                concurrentRequests: '20'
+              }
+            }
+          }
+        ]
       }
     }
   }
@@ -258,7 +303,7 @@ resource apimPolicy 'Microsoft.ApiManagement/service/apis/policies@2023-05-01-pr
   name: 'policy'
   properties: {
     format: 'rawxml'
-    value: '<policies><inbound><base /><set-backend-service base-url="https://${containerApp.properties.configuration.ingress.fqdn}" /></inbound><backend><base /></backend><outbound><base /></outbound><on-error><base /></on-error></policies>'
+    value: '<policies><inbound><base /><set-backend-service base-url="https://${containerApp.properties.configuration.ingress.fqdn}" /><set-variable name="callerKey" value="@(context.Subscription != null ? context.Subscription.Key : context.Request.IpAddress)" /><rate-limit-by-key calls="60" renewal-period="60" counter-key="@(context.Variables.GetValueOrDefault<string>("callerKey", context.Request.IpAddress))" /><quota-by-key calls="10000" renewal-period="86400" counter-key="@(context.Variables.GetValueOrDefault<string>("callerKey", context.Request.IpAddress))" /></inbound><backend><base /></backend><outbound><base /><set-header name="X-Content-Type-Options" exists-action="override"><value>nosniff</value></set-header><set-header name="Strict-Transport-Security" exists-action="override"><value>max-age=31536000; includeSubDomains</value></set-header></outbound><on-error><base /></on-error></policies>'
   }
 }
 
