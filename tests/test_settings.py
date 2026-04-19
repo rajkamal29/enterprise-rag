@@ -8,7 +8,9 @@ from config.settings import AzureSettings
 
 class TestAzureSettingsDefaults:
     def test_all_string_fields_default_to_empty(self) -> None:
-        settings = AzureSettings()
+        # model_construct() bypasses env-var and .env file loading,
+        # giving us pure pydantic field defaults.
+        settings = AzureSettings.model_construct()
         assert settings.azure_openai_endpoint == ""
         assert settings.azure_search_endpoint == ""
         assert settings.azure_keyvault_url == ""
@@ -60,7 +62,8 @@ class TestAzureSettingsEnvOverride:
 
 class TestAzureSettingsConfiguredProperties:
     def test_not_configured_when_empty(self) -> None:
-        settings = AzureSettings()
+        # model_construct() bypasses env-var and .env file loading.
+        settings = AzureSettings.model_construct()
         assert not settings.openai_is_configured
         assert not settings.search_is_configured
         assert not settings.keyvault_is_configured
