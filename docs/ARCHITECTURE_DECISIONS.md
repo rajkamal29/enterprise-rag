@@ -59,3 +59,15 @@ Reason: Chunks that cut mid-sentence pass fragmented context to the LLM, degradi
 ## ADR-14: Explicit Ingestion Pipeline Over Azure AI Search Integrated Vectorization
 Decision: Build an explicit Python ingestion pipeline (parse → chunk → embed → index) rather than using Azure AI Search Integrated Vectorization.  
 Reason: Integrated Vectorization uses fixed-character chunking (no paragraph awareness), outputs a fixed schema (no `document_hash`, `token_estimate`, `chunk_index`), deduplicates by timestamp change-tracking (not content hash), requires documents in Azure Blob Storage, and stores configuration in portal JSON (not Git). The explicit pipeline enforces a shared `Chunk` contract across both tracks, enables SHA256 content-hash idempotence, and keeps all decisions version-controlled and testable. See `docs/WHY_EXPLICIT_INGESTION_PIPELINE.md` for full analysis.
+
+## ADR-15: APIM Policy Baseline for Production Gateway Control
+Decision: Enforce APIM subscription key access and apply baseline gateway controls (rate limiting, quota, and security headers) for the custom runtime API surface.  
+Reason: Agentic endpoints can be expensive and abuse-prone. Gateway-level controls protect upstream capacity, bound request rates per caller, and standardize API security posture without changing application code.
+
+## ADR-16: ACA Runtime Resilience with Health Probes and HTTP-Concurrency Scaling
+Decision: Configure startup/liveness/readiness probes on `/health` and add HTTP concurrency autoscaling rules for the container app runtime.  
+Reason: Containerized LLM orchestration services need deterministic startup gating and fast unhealthy replica recycling. Probe-based health and concurrency scaling reduce outage blast radius and improve runtime stability under variable load.
+
+## ADR-17: NFR and DR Baseline as Architecture Contract
+Decision: Define explicit production NFR targets (availability, latency budgets, error budget, RTO/RPO) and a phased DR strategy (single-region baseline, active-passive upgrade path).  
+Reason: Architecture discussions must be tied to measurable service objectives, not only implementation choices. Codifying NFR and DR options enables consistent tradeoff decisions across cost, performance, and reliability requirements.
