@@ -127,6 +127,10 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
           }
           env: [
             {
+              name: 'AZURE_CLIENT_ID'
+              value: uami.properties.clientId
+            }
+            {
               name: 'AZURE_OPENAI_ENDPOINT'
               value: azureOpenAiEndpoint
             }
