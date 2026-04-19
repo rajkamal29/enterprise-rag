@@ -3,7 +3,6 @@
 import json
 import logging
 from pathlib import Path
-from typing import Any
 
 from azure_clients.factory import AzureClientFactory
 from config.settings import AzureSettings

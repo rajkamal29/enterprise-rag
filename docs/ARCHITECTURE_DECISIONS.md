@@ -51,3 +51,11 @@ Reason: Agentic loops with multiple LLM calls can produce unbounded costs. Token
 ## ADR-12: Day 10 as the Architecture Synthesis Day
 Decision: Reserve the final day for a full topic refresh and tradeoff compendium across both tracks.  
 Reason: Senior architecture interviews and stakeholder reviews require decision guidance, not just implementation artifacts.
+
+## ADR-13: Paragraph-Aware Chunking Over Fixed-Character Split
+Decision: Use paragraph-aware fixed-size chunking (1024 chars, 128-char overlap, `\n\n` separator, sentence-boundary overlap trimming) rather than fixed-character split, fixed-token split, or managed Azure AI Search Text Split skill.  
+Reason: Chunks that cut mid-sentence pass fragmented context to the LLM, degrading faithfulness scores measurably. Splitting at `\n\n` paragraph boundaries preserves semantic coherence without any extra dependencies. The `Chunk` dataclass includes `section_title: Optional[str]` reserved for a one-line upgrade to `prebuilt-layout` model when hierarchical chunking is needed. Semantic chunking (embedding-model-based boundary detection) was considered but rejected for Day 3 due to 2–5x ingestion latency cost; it is the recommended upgrade path if RAGAS faithfulness scores fall below threshold during Day 7 evaluation. See `docs/INGESTION_OPTIONS_REFERENCE.md` for full trade-off table.
+
+## ADR-14: Explicit Ingestion Pipeline Over Azure AI Search Integrated Vectorization
+Decision: Build an explicit Python ingestion pipeline (parse → chunk → embed → index) rather than using Azure AI Search Integrated Vectorization.  
+Reason: Integrated Vectorization uses fixed-character chunking (no paragraph awareness), outputs a fixed schema (no `document_hash`, `token_estimate`, `chunk_index`), deduplicates by timestamp change-tracking (not content hash), requires documents in Azure Blob Storage, and stores configuration in portal JSON (not Git). The explicit pipeline enforces a shared `Chunk` contract across both tracks, enables SHA256 content-hash idempotence, and keeps all decisions version-controlled and testable. See `docs/WHY_EXPLICIT_INGESTION_PIPELINE.md` for full analysis.

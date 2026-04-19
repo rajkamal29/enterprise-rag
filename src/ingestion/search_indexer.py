@@ -96,8 +96,8 @@ class SearchIndexer:
                 name="embedding",
                 type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
                 searchable=True,
-                retrievable=False,
-                dimensions=3072,  # text-embedding-3-large
+                hidden=True,
+                vector_search_dimensions=3072,  # text-embedding-3-large
                 vector_search_profile_name="my-vector-config",
             ),
         ]
@@ -176,6 +176,48 @@ class SearchIndexer:
         except Exception as e:
             logger.error(f"Failed to get index stats: {e}")
             return {"document_count": 0, "storage_size_bytes": 0}
+
+    def delete_chunks_by_hash(self, document_hash: str) -> int:
+        """Delete all chunks belonging to a document identified by its hash.
+
+        Used by the pipeline when a document's content changes, to remove
+        stale chunks before re-indexing the updated version.
+
+        Args:
+            document_hash: The SHA256[:12] hash stored in the document_hash field.
+
+        Returns:
+            Number of chunks successfully deleted.
+        """
+        try:
+            results = self.search_client.search(
+                search_text="*",
+                filter=f"document_hash eq '{document_hash}'",
+                select=["chunk_id"],
+            )
+            chunk_ids = [r["chunk_id"] for r in results]
+            if not chunk_ids:
+                logger.info(
+                    "No chunks found for document_hash=%s — nothing to delete",
+                    document_hash,
+                )
+                return 0
+
+            delete_docs = [{"chunk_id": cid} for cid in chunk_ids]
+            result = self.search_client.delete_documents(delete_docs)
+            succeeded = sum(1 for r in result if r.succeeded)
+            logger.info(
+                "Deleted %d/%d chunks for document_hash=%s",
+                succeeded,
+                len(chunk_ids),
+                document_hash,
+            )
+            return succeeded
+        except Exception as e:
+            logger.error(
+                "Failed to delete chunks for document_hash=%s: %s", document_hash, e
+            )
+            raise
 
     def delete_index(self) -> None:
         """Delete the entire index."""
