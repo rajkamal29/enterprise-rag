@@ -25,8 +25,8 @@ Call ``reset_conversation()`` to start a new thread.
 
 Key design decisions
 ---------------------
-- ``vector_semantic_hybrid`` query type: best retrieval quality from the
-  hybrid index created in Day 3 (BM25 + HNSW + semantic reranker).
+- ``simple`` query type: BM25 keyword search. Our index uses externally
+  pre-computed embeddings, so integrated-vectorizer modes are not available.
 - ``top_k=5``: returns top 5 chunks to GPT-4o; tunable.
 - Citations are extracted from ``MessageTextAnnotation`` objects returned by
   the agents API — these are grounding references to the retrieved chunks.
@@ -292,7 +292,7 @@ class FoundryRagAgent:
         search_tool = AzureAISearchTool(
             index_connection_id=self._index_connection_id,
             index_name=self._index_name,
-            query_type=AzureAISearchQueryType.VECTOR_SEMANTIC_HYBRID,
+            query_type=AzureAISearchQueryType.SIMPLE,
             top_k=self._top_k,
         )
 

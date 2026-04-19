@@ -92,6 +92,12 @@ class SearchIndexer:
                 type=SearchFieldDataType.Int32,
                 retrievable=True,
             ),
+            SimpleField(
+                name="section_title",
+                type=SearchFieldDataType.String,
+                retrievable=True,
+                filterable=True,
+            ),
             SearchField(
                 name="embedding",
                 type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
@@ -168,10 +174,20 @@ class SearchIndexer:
             Dictionary with index stats
         """
         try:
-            stats = self.search_client.get_search_statistics()
+            stats = self.search_index_client.get_index_statistics(self.index_name)
+            # SDK may return an object or a plain dict depending on the version
+            if hasattr(stats, "document_count"):
+                doc_count = stats.document_count or 0
+                storage = stats.storage_size or 0
+            else:
+                raw: dict[str, object] = stats if isinstance(stats, dict) else vars(stats)
+                _dc = raw.get("documentCount", raw.get("document_count", 0))
+                _st = raw.get("storageSize", raw.get("storage_size", 0))
+                doc_count = int(_dc) if isinstance(_dc, (int, float, str)) else 0
+                storage = int(_st) if isinstance(_st, (int, float, str)) else 0
             return {
-                "document_count": stats.document_count,
-                "storage_size_bytes": stats.storage_size,
+                "document_count": doc_count,
+                "storage_size_bytes": storage,
             }
         except Exception as e:
             logger.error(f"Failed to get index stats: {e}")
