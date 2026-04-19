@@ -38,11 +38,18 @@ var logAnalyticsName = 'log-${suffix}'
 var envName = 'acaenv-${suffix}'
 var appName = 'aca-rag-${suffix}'
 var apimName = 'apim-${suffix}'
+var acrLoginServer = '${acrName}.azurecr.io'
 
 var tags = {
   environment: environment
   project: 'enterprise-rag'
   managedBy: 'bicep'
+}
+
+resource uami 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'id-aca-${suffix}'
+  location: location
+  tags: tags
 }
 
 resource acr 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
@@ -87,8 +94,12 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' = {
 resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   name: appName
   location: location
+  dependsOn: [acrPullRoleAssignment]
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${uami.id}': {}
+    }
   }
   properties: {
     managedEnvironmentId: managedEnvironment.id
@@ -100,8 +111,8 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
       }
       registries: [
         {
-          server: acr.properties.loginServer
-          identity: 'system'
+          server: acrLoginServer
+          identity: uami.id
         }
       ]
     }
@@ -109,7 +120,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
       containers: [
         {
           name: 'api'
-          image: '${acr.properties.loginServer}/enterprise-rag-api:${imageTag}'
+          image: '${acrLoginServer}/enterprise-rag-api:${imageTag}'
           resources: {
             cpu: json('0.5')
             memory: '1.0Gi'
@@ -148,14 +159,14 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
 }
 
 resource acrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(acr.id, containerApp.id, 'acrpull')
+  name: guid(acr.id, uami.id, 'acrpull')
   scope: acr
   properties: {
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       '7f951dda-4ed3-4680-a7ca-43fe172d538d'
     )
-    principalId: containerApp.identity.principalId
+    principalId: uami.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }
@@ -180,6 +191,7 @@ resource apimApi 'Microsoft.ApiManagement/service/apis@2023-05-01-preview' = {
   properties: {
     displayName: 'Enterprise RAG API'
     path: 'rag'
+    subscriptionRequired: false
     protocols: [
       'https'
     ]
@@ -217,6 +229,26 @@ resource apimOperation 'Microsoft.ApiManagement/service/apis/operations@2023-05-
   }
 }
 
+resource apimHealthOperation 'Microsoft.ApiManagement/service/apis/operations@2023-05-01-preview' = {
+  parent: apimApi
+  name: 'health'
+  properties: {
+    displayName: 'Health'
+    method: 'GET'
+    urlTemplate: '/health'
+    responses: [
+      {
+        statusCode: 200
+        representations: [
+          {
+            contentType: 'application/json'
+          }
+        ]
+      }
+    ]
+  }
+}
+
 resource apimPolicy 'Microsoft.ApiManagement/service/apis/policies@2023-05-01-preview' = {
   parent: apimApi
   name: 'policy'
@@ -226,7 +258,7 @@ resource apimPolicy 'Microsoft.ApiManagement/service/apis/policies@2023-05-01-pr
   }
 }
 
-output acrLoginServer string = acr.properties.loginServer
+output acrLoginServer string = acrLoginServer
 output containerAppFqdn string = containerApp.properties.configuration.ingress.fqdn
-output containerAppIdentityPrincipalId string = containerApp.identity.principalId
+output containerAppIdentityPrincipalId string = uami.properties.principalId
 output apimGatewayUrl string = apim.properties.gatewayUrl
