@@ -1,6 +1,6 @@
 # Execution Tracker
 
-Last updated: 2026-04-19
+Last updated: 2026-04-20
 
 ## Overall Progress
 - Days completed: 10/10
@@ -24,6 +24,11 @@ Last updated: 2026-04-19
 ## Risks
 - Azure OpenAI access delay: Use OpenAI API fallback first.
 - Scope expansion risk: Keep daily scope capped to 6 hours.
+
+## Open Follow-ups (Optional)
+- Capture GitHub Actions post-deploy smoke workflow URL as evidence.
+- Capture APIM `/rag/health` and `/rag/ask` validation screenshots.
+- Re-run infra deployment only when rebuilding environment after RG deletion (see `docs/DEV_ENV_REBUILD.md`).
 
 ## Update Template
 Date:

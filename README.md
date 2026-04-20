@@ -14,7 +14,8 @@ Production-grade Agentic RAG portfolio project covering both Azure AI Foundry en
 | Day 6 | ✅ Complete | `evaluation_gate.py` CI gate: per-track citation rate + relevance thresholds enforced in CI; 70 tests passing |
 | Day 7 | ✅ Complete | `observability/tracing.py` (OTel spans on both tracks, App Insights exporter); `guardrails/content_safety.py` (Azure AI Content Safety pre-check); 86 tests passing |
 | Day 8 | ✅ Complete | `multi_agent` planner pattern (plan → retrieve loop → summarise → cite), `PlannerAgent`, 13 tests, and `docs/MULTI_AGENT_PATTERNS.md`; 99 tests passing |
-| Day 9+ | 🔜 Pending | See `EXECUTION_PLAN.md` and `docs/DAY_9.md` |
+| Day 9 | ✅ Complete | ACA + APIM runtime deployment, hardened APIM policies, health/ask validation |
+| Day 10 | ✅ Complete | Architecture synthesis, NFR/DR baseline, ADR completion |
 
 ## Architecture
 
@@ -67,7 +68,7 @@ src/
   evaluation_gate.py    # CI quality gate — citation rate + relevance thresholds
 infra/             # Bicep modules for all Azure services
 docs/              # Day guides (DAY_1.md … DAY_10.md), ADRs, reference docs
-tests/             # Unit tests (pytest, 99 passing)
+tests/             # Unit tests (pytest, 103 passing)
 data/
   sample_documents/     # HTML, TXT corpus for ingestion tests
   track_compare.json    # Latest Track A vs B comparison output
