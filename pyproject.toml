@@ -17,7 +17,7 @@ dependencies = [
   "azure-ai-documentintelligence>=1.0,<2.0",
   "azure-ai-agents>=1.1,<2.0",
   "faiss-cpu>=1.8,<2.0; platform_system != 'Windows'",
-  "langgraph>=0.2,<1.0",
+  "langgraph>=0.2,<2.0",
   "langchain-openai>=0.1,<1.0",
   "langchain-core>=0.2,<1.0",
   "opentelemetry-api>=1.25,<2.0",
